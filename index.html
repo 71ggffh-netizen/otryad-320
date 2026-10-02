@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#100f0d">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Закрытый канал. Доступ по личному номеру.">
+<meta property="og:title" content="Входящая передача">
+<meta property="og:description" content="Закрытый канал. Доступ по личному номеру.">
+<title>Отряд 320</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=PT+Mono&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: one phone-height case file. Each scene is a full-height stack: bar, evidence panel, typed caption, action. */
+:root{
+  --night:#100f0d;      /* outside the file */
+  --desk:#1b1915;       /* scene ground */
+  --paper:#e9dec3;      /* documents, captions */
+  --paper-dim:#cfc19f;
+  --ink:#1c1912;
+  --ink-soft:#6a5e45;
+  --olive:#5d6237;
+  --olive-deep:#2b2e1b;
+  --red:#b3281d;        /* stamps, alarms */
+  --amber:#f2b146;      /* radio display, tequila */
+  --lime:#a9c24c;       /* accepted */
+  --f-display:"Oswald","Arial Narrow",Impact,sans-serif;
+  --f-type:"PT Mono","Courier New",ui-monospace,monospace;
+  --f-hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--night);color:var(--paper)}
+body{font-family:var(--f-type);-webkit-font-smoothing:antialiased;overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+
+#app{position:relative;height:100%;max-width:460px;margin:0 auto;overflow:hidden;background:
+  radial-gradient(120% 80% at 50% 40%, #24211b 0%, var(--desk) 55%, #0d0c0a 100%);
+  box-shadow:0 0 80px #000}
+/* film grain over everything */
+#app::after{content:"";position:absolute;inset:-50%;pointer-events:none;z-index:50;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .6s steps(3) infinite}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}100%{transform:translate(0,0)}}
+
+/* ---------- scenes ---------- */
+.scene{position:absolute;inset:0;display:none;flex-direction:column;gap:12px;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.scene.on{display:flex;animation:sceneIn .45s ease-out both}
+@keyframes sceneIn{from{opacity:0;filter:brightness(2.2) contrast(1.4)}to{opacity:1;filter:none}}
+
+.bar{display:flex;align-items:center;gap:10px;padding-right:44px;min-height:32px;
+  font:500 12px/1 var(--f-display);letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim)}
+.bar .secret{margin-left:auto;color:var(--red);border:1.5px solid var(--red);padding:4px 6px 3px;transform:rotate(-2deg)}
+.back{background:none;border:0;padding:6px 4px;color:var(--paper-dim);font:500 12px/1 var(--f-display);letter-spacing:.14em}
+
+#mute{position:absolute;z-index:60;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;width:38px;height:38px;
+  border-radius:50%;border:1.5px solid #ffffff33;background:#0008;display:grid;place-items:center;padding:0}
+#mute svg{width:18px;height:18px}
+#mute .off{display:none}
+#mute.muted .on{display:none}
+#mute.muted .off{display:block}
+
+/* evidence panel */
+.panel{position:relative;flex:1 1 auto;min-height:0;margin:4px 6px 0;background:#000;border:3px solid var(--ink);
+  box-shadow:0 0 0 6px var(--paper),0 22px 40px #000c;transform:rotate(-.6deg);overflow:hidden}
+.panel::before{content:"";position:absolute;z-index:3;top:-10px;left:50%;width:96px;height:26px;margin-left:-48px;
+  background:#e9dec3aa;transform:rotate(3deg);box-shadow:0 1px 2px #0005}
+.panel img,.panel video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.panel .kb{animation:kb 16s ease-out both}
+@keyframes kb{from{transform:scale(1.14) translateY(2%)}to{transform:scale(1) translateY(0)}}
+.panel .tag{position:absolute;z-index:3;left:10px;top:12px;background:var(--paper);color:var(--ink);
+  font:700 11px/1 var(--f-display);letter-spacing:.14em;padding:5px 7px 4px;transform:rotate(-2deg)}
+.tapplay{position:absolute;z-index:4;inset:0;display:none;place-items:center;background:#0006;border:0;
+  font:700 16px/1 var(--f-display);letter-spacing:.16em;color:var(--paper)}
+.needs-tap .tapplay{display:grid}
+
+/* comic caption */
+.caption{position:relative;z-index:2;margin:-34px 2px 0;background:var(--paper);color:var(--ink);border:2px solid var(--ink);
+  box-shadow:5px 5px 0 #000;padding:12px 14px 14px;transform:rotate(.5deg)}
+.cap-label{font:700 13px/1 var(--f-display);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.cap-text{margin:0;font:15.5px/1.45 var(--f-type);white-space:pre-line;min-height:4.35em}
+.cap-text .hl{background:var(--ink);color:var(--amber);padding:0 3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.typing::after{content:"▌";animation:blink .8s steps(1) infinite;margin-left:1px}
+@keyframes blink{50%{opacity:0}}
+
+/* buttons */
+.actions{display:flex;flex-direction:column;gap:10px;transition:opacity .35s, transform .35s}
+.actions.wait{opacity:0;transform:translateY(8px);pointer-events:none}
+.btn{width:100%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 #000;
+  padding:15px 16px 13px;font:700 18px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
+.btn.red{background:var(--red);color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--paper-dim);border-color:#ffffff33;box-shadow:none;font-size:14px;padding:11px}
+.note{margin:0;text-align:center;font:13px/1.4 var(--f-type);color:var(--paper-dim)}
+
+/* ---------- boot / radio ---------- */
+#boot{background:#0b0a08;justify-content:center}
+#boot::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,#0000 0 2px,#0000004d 2px 4px);z-index:1}
+.radio{position:relative;z-index:2;color:var(--amber);font:14px/1.6 var(--f-type);text-shadow:0 0 8px #f2b14666;min-height:9.6em;white-space:pre-line}
+.radio-big{position:relative;z-index:2;margin:6px 0 4px;font:700 clamp(34px,11vw,48px)/1.02 var(--f-display);text-transform:uppercase;
+  color:var(--paper);text-wrap:balance;min-height:2.1em}
+.radio-big small{display:block;font:500 15px/1.4 var(--f-display);letter-spacing:.2em;color:var(--amber);margin-top:10px}
+.wave{position:relative;z-index:2;display:flex;align-items:center;gap:3px;height:34px;margin:6px 0 18px}
+.wave i{flex:1;background:var(--amber);opacity:.75;height:20%;border-radius:1px;animation:wv 1s ease-in-out infinite}
+@keyframes wv{50%{height:100%}}
+#boot .actions{position:relative;z-index:2}
+.flicker{animation:flick 4s infinite}
+@keyframes flick{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}97%{opacity:.8}}
+
+/* ---------- code terminal ---------- */
+#code{justify-content:flex-start;overflow-y:auto}
+.device{position:relative;background:linear-gradient(180deg,#3a3e25,var(--olive-deep));border:2px solid #000;border-radius:14px;
+  padding:18px 16px 16px;box-shadow:inset 0 2px 0 #ffffff1a,0 20px 40px #000a}
+.device::before,.device::after{content:"";position:absolute;top:9px;width:8px;height:8px;border-radius:50%;background:#14150c;box-shadow:inset 1px 1px 0 #fff3}
+.device::before{left:9px}.device::after{right:9px}
+.dev-title{font:500 11px/1 var(--f-display);letter-spacing:.24em;color:#cfd3a6aa;text-align:center;text-transform:uppercase}
+.screen{margin:12px 0 14px;background:#0d0f07;border:2px solid #000;border-radius:6px;padding:16px 12px 12px;box-shadow:inset 0 0 22px #000}
+.cells{display:flex;justify-content:center;align-items:center;gap:5px}
+.cell{width:clamp(26px,8.4vw,34px);height:46px;border-bottom:3px solid #f2b14655;display:grid;place-items:center;
+  font:700 30px/1 var(--f-display);color:var(--amber);text-shadow:0 0 10px #f2b14699}
+.cell.cur{border-bottom-color:var(--amber);animation:blink 1s steps(1) infinite}
+.cells .sep{width:8px}
+.cells .dash{font:700 26px/1 var(--f-display);color:#f2b14699;width:12px;text-align:center}
+.screen.bad .cell{color:#ff5a4a;border-bottom-color:#ff5a4a;text-shadow:0 0 10px #ff5a4a99}
+.screen.good .cell{color:var(--lime);border-bottom-color:var(--lime);text-shadow:0 0 12px #a9c24caa}
+.msg{margin:12px 2px 0;min-height:2.9em;font:13.5px/1.45 var(--f-type);color:var(--amber);text-align:center}
+.screen.bad .msg{color:#ff7a6a}
+.screen.good .msg{color:var(--lime)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.key{height:54px;border-radius:8px;border:2px solid #000;background:linear-gradient(180deg,#e2d6b8,#c6b791);color:var(--ink);
+  font:700 24px/1 var(--f-display);box-shadow:0 4px 0 #000;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
+.key.fn{background:linear-gradient(180deg,#575c35,#3c4024);color:var(--paper);font-size:15px;letter-spacing:.1em}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.code-head{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.code-head h2{margin:0;font:700 34px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.code-head p{margin:0;font:14px/1.4 var(--f-type);color:var(--paper-dim)}
+
+/* ---------- access (full-bleed video) ---------- */
+.full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#access,#boom{padding:0}
+.overlay-actions{position:absolute;z-index:5;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
+.big-stamp{position:absolute;z-index:4;left:50%;top:38%;transform:translate(-50%,-50%) rotate(-12deg) scale(2.4);opacity:0;
+  border:6px solid var(--red);color:var(--red);padding:10px 18px 6px;background:#e9dec3e6;
+  font:700 clamp(40px,13vw,58px)/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.big-stamp.hit{animation:stampIn .35s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stampIn{to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
+.vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,#000a 0%,#0000 25%,#0000 60%,#000d 100%)}
+
+/* ---------- dossier sheet ---------- */
+.sheet{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;background:
+  repeating-linear-gradient(180deg,#0000 0 27px,#1c191212 27px 28px),var(--paper);
+  color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 #000;padding:18px 16px 22px;scroll-behavior:smooth}
+.sheet-head{display:flex;gap:14px;align-items:center}
+.patch{flex:0 0 auto;width:104px;height:104px;border-radius:50%;overflow:hidden;box-shadow:0 6px 14px #0007;background:#222}
+.patch img{width:100%;height:100%;object-fit:cover;transform:scale(1.18)}
+.sheet h2{margin:0;font:700 28px/1.02 var(--f-display);text-transform:uppercase;text-wrap:balance}
+.sheet h2 small{display:block;font:500 12px/1.3 var(--f-display);letter-spacing:.2em;color:var(--red);margin-bottom:6px}
+.sheet h3{margin:0 0 8px;font:700 13px/1 var(--f-display);letter-spacing:.18em;color:var(--red);text-transform:uppercase}
+.blk{margin-top:20px;padding-top:16px;border-top:2px dashed #1c191244}
+.rv{display:none}
+.rv.in{display:block;animation:rvIn .5s ease-out both}
+.sheet-head.rv.in{display:flex}
+@keyframes rvIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.decode{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:baseline}
+.decode b{font:700 34px/1 var(--f-display);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--amber);padding:4px 8px 2px;text-align:center;min-width:2.4em}
+.decode span{font:15px/1.3 var(--f-type)}
+.decode .row{display:contents}
+.decode .row>*{opacity:0;transition:opacity .4s}
+.decode .row.in>*{opacity:1}
+.motto{font:700 clamp(40px,13vw,56px)/.95 var(--f-display);letter-spacing:.01em;margin:4px 0 6px}
+.motto-ru{font:700 26px/1.1 var(--f-display);text-transform:uppercase;min-height:1.1em}
+.shots{display:inline-block;margin-top:10px;color:var(--red);border:4px solid var(--red);padding:6px 14px 2px;
+  font:700 44px/1 var(--f-display);transform:rotate(-6deg) scale(2);opacity:0}
+.shots.hit{animation:stampSm .3s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stampSm{to{opacity:1;transform:rotate(-6deg) scale(1)}}
+.sheet p{margin:0;font:15px/1.5 var(--f-type)}
+.sheet .lead{font:700 20px/1.25 var(--f-display);text-transform:uppercase}
+
+/* personal file */
+.pf{display:grid;grid-template-columns:42% 1fr;gap:14px;align-items:start}
+.photo{position:relative;aspect-ratio:3/4;max-width:100%;background:#000;border:3px solid var(--paper);outline:2px solid var(--ink);box-shadow:3px 4px 10px #0006;transform:rotate(-2deg)}
+.photo img,.photo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.photo video{opacity:0;transition:opacity 1.2s}
+.photo.alive video{opacity:1}
+.clip{position:absolute;z-index:2;top:-14px;left:18px;width:16px;height:44px;border:3px solid #8b8b8b;border-radius:10px;border-bottom-color:transparent}
+.fields{display:flex;flex-direction:column;gap:9px;min-width:0}
+.f label{display:block;font:11px/1.2 var(--f-type);color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.f div{font:700 18px/1.15 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere;min-height:1.15em}
+.ach{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.ach li{display:flex;gap:9px;font:14.5px/1.4 var(--f-type)}
+.ach li::before{content:"★";color:var(--red);flex:0 0 auto}
+.verdict{display:block;width:max-content;max-width:100%;margin:18px auto 4px;color:var(--red);border:4px double var(--red);padding:8px 12px 4px;
+  font:700 22px/1.05 var(--f-display);text-transform:uppercase;text-align:center;transform:rotate(-5deg) scale(2);opacity:0}
+.verdict.hit{animation:stampV .3s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stampV{to{opacity:1;transform:rotate(-5deg) scale(1)}}
+
+/* ---------- ritual ---------- */
+#ritual{justify-content:space-between}
+.pips{display:flex;gap:6px}
+.pips i{flex:1;height:4px;background:#ffffff22}
+.pips i.done{background:var(--amber)}
+.rstep{display:none;flex-direction:column;gap:14px;flex:1;justify-content:center}
+.rstep.on{display:flex;animation:rvIn .45s ease-out both}
+.r-no{font:500 13px/1 var(--f-display);letter-spacing:.24em;color:var(--amber)}
+.r-title{margin:0;font:700 clamp(48px,16vw,72px)/.92 var(--f-display);text-transform:uppercase}
+.r-text{margin:0;font:16px/1.5 var(--f-type);color:var(--paper)}
+.r-text b{color:var(--amber);font-weight:400}
+.oath{display:flex;flex-direction:column;gap:6px;margin:4px 0}
+.oath p{margin:0;font:700 20px/1.25 var(--f-display);text-transform:uppercase;color:#ffffff33;transition:color .4s}
+.oath p.lit{color:var(--paper)}
+.oath p.lit:last-child{color:var(--amber)}
+.hold{position:relative;overflow:hidden;width:100%;height:76px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);
+  box-shadow:4px 4px 0 #000;font:700 18px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hold-fill{position:absolute;inset:0;width:0;background:var(--amber)}
+.hold-label{position:relative}
+.hold.pressing{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+.accepted{align-self:center;color:var(--lime);border:4px solid var(--lime);padding:8px 14px 4px;font:700 26px/1 var(--f-display);
+  text-transform:uppercase;transform:rotate(-4deg)}
+#count{position:absolute;inset:0;z-index:40;display:none;place-items:center;background:#000d;
+  font:700 min(60vw,280px)/1 var(--f-display);color:var(--paper)}
+#count.on{display:grid}
+#count span{animation:cnt .9s ease-out both}
+@keyframes cnt{from{transform:scale(1.8);opacity:0}25%{opacity:1}to{transform:scale(.9);opacity:.85}}
+
+/* ---------- boom ---------- */
+.boom-word{position:absolute;z-index:4;left:0;right:0;top:30%;text-align:center;font:700 clamp(90px,30vw,150px)/1 var(--f-display);
+  color:var(--amber);-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink);transform:scale(3);opacity:0;pointer-events:none}
+.boom-word.hit{animation:boomW 1.8s ease-out forwards}
+@keyframes boomW{0%{transform:scale(3) rotate(-6deg);opacity:0}12%{transform:scale(1) rotate(-6deg);opacity:1}70%{opacity:1}100%{transform:scale(1.15) rotate(-6deg);opacity:0}}
+#flash{position:absolute;inset:0;z-index:45;background:#fff;opacity:0;pointer-events:none}
+#flash.hit{animation:flash .7s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+.quake{animation:quake .55s}
+@keyframes quake{10%{transform:translate(-10px,6px)}25%{transform:translate(9px,-8px)}40%{transform:translate(-7px,-4px)}55%{transform:translate(6px,7px)}75%{transform:translate(-3px,2px)}}
+.after{position:absolute;z-index:5;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;gap:12px}
+.after h2{margin:0;text-align:center;font:700 34px/1 var(--f-display);text-transform:uppercase;text-shadow:0 2px 12px #000}
+
+/* ---------- ID ---------- */
+#id{overflow-y:auto;justify-content:flex-start}
+.id-head{text-align:center}
+.id-head h2{margin:0;font:700 40px/1 var(--f-display);text-transform:uppercase;color:var(--lime);letter-spacing:.04em}
+.id-head p{margin:6px 0 0;font:13px/1.4 var(--f-type);color:var(--paper-dim)}
+.idcard{flex:0 0 auto;width:100%;max-width:min(100%,calc(62dvh * .714));margin:0 auto;aspect-ratio:5/7;perspective:1400px;container-type:inline-size;cursor:pointer}
+.idcard:focus-visible{outline:3px solid var(--amber);outline-offset:4px}
+.id-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,1.3,.5,1)}
+.idcard.open .id-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:2.6cqw;overflow:hidden;text-align:left}
+.cover{background:repeating-linear-gradient(45deg,#0000 0 3px,#0000001f 3px 5px),linear-gradient(160deg,#3d4226,#23261a);
+  border:2px solid #000;box-shadow:0 18px 40px #000b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4cqw;color:#e7c46d}
+.cover .patch{width:46cqw;height:46cqw}
+.cover strong{font:700 7.4cqw/1 var(--f-display);letter-spacing:.14em;text-transform:uppercase}
+.cover span{font:500 3.6cqw/1 var(--f-display);letter-spacing:.3em;text-transform:uppercase}
+.cover em{font:normal 3.4cqw/1 var(--f-type);color:#e7c46d99;animation:blink 1.6s steps(1) infinite}
+.inside{transform:rotateY(180deg);background:var(--paper);color:var(--ink);border:2px solid #000;padding:6cqw;display:flex;flex-direction:column;gap:2.6cqw}
+.inside .ttl{font:700 5.6cqw/1 var(--f-display);text-transform:uppercase;letter-spacing:.06em;text-align:center}
+.inside .sub{font:500 3.3cqw/1 var(--f-display);letter-spacing:.2em;color:var(--red);text-align:center;margin-top:-1cqw}
+.inside hr{border:0;border-top:2px solid var(--ink);margin:0}
+.id-top{display:grid;grid-template-columns:36% 1fr;gap:4cqw}
+.id-photo{aspect-ratio:3/4;border:2px solid var(--ink);overflow:hidden;background:#000}
+.id-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.idf{display:flex;flex-direction:column;gap:2.6cqw;min-width:0}
+.idf label,.id-rows label{display:block;font:2.8cqw/1.2 var(--f-type);color:var(--ink-soft);text-transform:uppercase}
+.idf div,.id-rows div{font:700 4.6cqw/1.1 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
+.id-rows{display:grid;grid-template-columns:1fr 1fr;gap:2.6cqw 4cqw}
+.id-foot{position:relative;margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between}
+.sign label{display:block;font:2.8cqw/1.2 var(--f-type);color:var(--ink-soft);text-transform:uppercase}
+.sign div{font:600 8.4cqw/1 var(--f-hand);color:#1d3b8f;transform:rotate(-4deg)}
+.seal{width:32cqw;color:var(--red);opacity:.88;transform:rotate(-14deg);mix-blend-mode:multiply}
+.seal text{font-family:var(--f-display);font-weight:700}
+.id-after{display:flex;flex-direction:column;gap:12px;text-align:center}
+.hbd{font:600 clamp(34px,11vw,44px)/1 var(--f-hand);color:var(--amber);transform:rotate(-2deg)}
+.order{font:700 17px/1.3 var(--f-display);text-transform:uppercase;letter-spacing:.06em}
+
+#modal{position:absolute;inset:0;z-index:70;background:#000e;display:none;flex-direction:column;gap:12px;align-items:center;justify-content:center;padding:20px 16px}
+#modal.on{display:flex}
+#modal img{max-height:70dvh;max-width:100%;border:2px solid var(--paper);-webkit-touch-callout:default}
+#modal p{margin:0;text-align:center;font:14px/1.45 var(--f-type);color:var(--paper)}
+#modal .btn{max-width:320px}
+#confetti{position:absolute;inset:0;z-index:48;pointer-events:none}
+#cut{position:absolute;inset:0;z-index:55;pointer-events:none;opacity:0;background:
+  repeating-linear-gradient(0deg,#fff1 0 1px,#0000 1px 3px),#000}
+#cut.hit{animation:cut .28s ease-out}
+@keyframes cut{0%{opacity:1}100%{opacity:0}}
+
+@media (max-height:640px){
+  .cap-text{font-size:14px;min-height:4.3em}
+  .key{height:46px}
+  .r-title{font-size:44px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #app::after{animation:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <button id="mute" aria-label="Выключить звук">
+    <svg class="on" viewBox="0 0 24 24" fill="none" stroke="#e9dec3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+    <svg class="off" viewBox="0 0 24 24" fill="none" stroke="#e9dec3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+  </button>
+
+  <!-- 0. Radio contact -->
+  <section class="scene" id="boot">
+    <div class="radio flicker" id="radioLog"></div>
+    <div class="wave" aria-hidden="true" id="wave"></div>
+    <div class="radio-big" id="radioBig"></div>
+    <div class="actions wait" id="bootActions">
+      <button class="btn" id="bootGo">Принять передачу</button>
+      <p class="note">Включи звук. На айфоне сними беззвучный режим.</p>
+      <button class="btn ghost" id="bootReset" hidden>Начать сначала</button>
+    </div>
+  </section>
+
+  <!-- 1–5. Act one documents are built from DOCS below -->
+  <div id="docs"></div>
+
+  <!-- 6. Code -->
+  <section class="scene" id="code">
+    <header class="bar"><button class="back" id="codeBack">‹ Донесение</button></header>
+    <div class="code-head">
+      <h2>Подтверди личность</h2>
+      <p>Номер написан на самом шлеме. Введи его.</p>
+    </div>
+    <div class="device" id="device">
+      <div class="dev-title">Терминал допуска · ОТБО-320</div>
+      <div class="screen" id="screen">
+        <div class="cells" id="cells" aria-live="polite"></div>
+        <div class="msg" id="msg">Ожидание ввода</div>
+      </div>
+      <div class="keys" id="keys"></div>
+    </div>
+  </section>
+
+  <!-- 7. Access granted -->
+  <section class="scene" id="access">
+    <video class="full" id="vAccess" muted playsinline preload="none" poster="media/V3_access_poster.jpg" src="media/V3_access.mp4"></video>
+    <div class="vignette"></div>
+    <div class="big-stamp" id="accessStamp">Допущен</div>
+    <button class="tapplay">Нажми, чтобы воспроизвести</button>
+    <div class="overlay-actions actions wait" id="accessActions">
+      <button class="btn" id="accessGo">Открыть досье</button>
+    </div>
+  </section>
+
+  <!-- 8. Squad dossier -->
+  <section class="scene" id="dossier">
+    <header class="bar"><span>Досье · лист 1</span><span class="secret">Сов. секретно</span></header>
+    <article class="sheet" id="dSheet">
+      <div class="sheet-head rv" data-r="0">
+        <div class="patch"><img src="media/I4_patch.jpg" alt="Шеврон отряда 320"></div>
+        <h2><small>Рассекречено</small>Отряд 320. Текила Бум</h2>
+      </div>
+      <div class="blk rv" data-r="1">
+        <h3>Что значит номер на шлеме</h3>
+        <div class="decode" id="decode"></div>
+      </div>
+      <div class="blk rv" data-r="2">
+        <h3>Девиз отряда</h3>
+        <div class="motto">BORN TO KILL</div>
+        <div class="motto-ru" id="mottoRu"></div>
+        <div class="shots" id="shots">Шоты.</div>
+      </div>
+      <div class="blk rv" data-r="4">
+        <h3>Боевая задача</h3>
+        <p class="lead">Один выстрел. Одна стопка.</p>
+        <p style="margin-top:8px">Ни одна рюмка не остаётся на столе. Ни один боец не пьёт в одиночку. Отряд пополняется раз в год, и только по личному приказу командования.</p>
+      </div>
+    </article>
+    <div class="actions" id="dActions"><button class="btn" id="dNext">Далее</button></div>
+  </section>
+
+  <!-- 9. Candidate file -->
+  <section class="scene" id="file">
+    <header class="bar"><span>Досье · лист 2</span><span class="secret">Личное дело</span></header>
+    <article class="sheet" id="fSheet">
+      <div class="pf">
+        <div class="photo" id="photo">
+          <span class="clip" aria-hidden="true"></span>
+          <img src="media/I5_shura.jpg" alt="Фото кандидата в шлеме">
+          <video id="vNod" muted playsinline loop preload="none" src="media/V4_nod.mp4"></video>
+        </div>
+        <div class="fields" id="fields"></div>
+      </div>
+      <div class="blk">
+        <h3>Основания для зачисления</h3>
+        <ul class="ach" id="ach"></ul>
+      </div>
+      <div class="verdict" id="verdict">Представлен<br>к зачислению</div>
+    </article>
+    <div class="actions wait" id="fActions"><button class="btn" id="fGo">К посвящению</button></div>
+  </section>
+
+  <!-- 10. Initiation -->
+  <section class="scene" id="ritual">
+    <div class="bar"><span id="rLabel">Посвящение</span></div>
+    <div class="pips" id="pips"><i></i><i></i><i></i><i></i></div>
+
+    <div class="rstep" data-s="0">
+      <div class="r-no">Этап 1 из 4</div>
+      <h2 class="r-title">Построение</h2>
+      <p class="r-text">Отряд к столу. Стопки в ряд, по одной на бойца. <b>Шлем во главе стола.</b></p>
+      <button class="btn" data-next>Отряд построен</button>
+    </div>
+
+    <div class="rstep" data-s="1">
+      <div class="r-no">Этап 2 из 4</div>
+      <h2 class="r-title">Заряжай</h2>
+      <p class="r-text">Текила до половины стопки. Сверху газировка, до края. <b>Не пить до команды.</b></p>
+      <button class="btn" data-next>Заряжено</button>
+    </div>
+
+    <div class="rstep" data-s="2">
+      <div class="r-no">Этап 3 из 4</div>
+      <h2 class="r-title">Присяга</h2>
+      <p class="r-text">Руку на шлем. Зажми кнопку и читай вслух. Отпустишь, и присяга встанет на паузу.</p>
+      <div class="oath" id="oath"></div>
+      <button class="hold" id="holdBtn"><span class="hold-fill" id="holdFill"></span><span class="hold-label" id="holdLabel">Зажми и читай</span></button>
+    </div>
+
+    <div class="rstep" data-s="3">
+      <div class="r-no">Этап 4 из 4</div>
+      <h2 class="r-title">Огонь</h2>
+      <p class="r-text">Накрой стопку ладонью. На счёт <b>«БУМ»</b> удар по столу и залпом.</p>
+      <button class="btn red" id="fire">Огонь</button>
+    </div>
+    <div style="height:4px"></div>
+  </section>
+
+  <!-- 11. Boom -->
+  <section class="scene" id="boom">
+    <video class="full" id="vBoom" muted playsinline preload="none" poster="media/V5_boom_poster.jpg" src="media/V5_boom.mp4"></video>
+    <div class="vignette"></div>
+    <div class="boom-word" id="boomWord">БУМ!</div>
+    <button class="tapplay">Нажми, чтобы воспроизвести</button>
+    <div class="after actions wait" id="boomActions">
+      <h2>Приказ выполнен</h2>
+      <button class="btn" id="boomGo">Получить удостоверение</button>
+    </div>
+  </section>
+
+  <!-- 12. ID -->
+  <section class="scene" id="id">
+    <div class="id-head">
+      <h2>Зачислен</h2>
+      <p id="idHint">Нажми на удостоверение, чтобы открыть</p>
+    </div>
+    <div class="idcard" id="idcard" role="button" tabindex="0" aria-label="Открыть удостоверение">
+      <div class="id-inner">
+        <div class="face cover">
+          <div class="patch"><img src="media/I4_patch.jpg" alt=""></div>
+          <strong>Удостоверение</strong>
+          <span>Текила-бум отряд 320</span>
+          <em>нажми, чтобы открыть</em>
+        </div>
+        <div class="face inside">
+          <div class="ttl">Удостоверение бойца</div>
+          <div class="sub">Текила-бум отряд 320</div>
+          <hr>
+          <div class="id-top">
+            <div class="id-photo"><img src="media/I5_shura.jpg" alt=""></div>
+            <div class="idf">
+              <div><label>Фамилия, имя</label><div data-k="fullName"></div></div>
+              <div><label>Позывной</label><div data-k="callsign"></div></div>
+              <div><label>Звание</label><div>Рядовой</div></div>
+            </div>
+          </div>
+          <div class="id-rows">
+            <div><label>Подразделение</label><div>Отряд 320 · взвод 410</div></div>
+            <div><label>Личный номер</label><div data-k="personal"></div></div>
+            <div><label>Девиз</label><div>Born to kill</div></div>
+            <div><label>Зачислен</label><div data-k="date"></div></div>
+          </div>
+          <div class="id-foot">
+            <div class="sign"><label>Командир отряда</label><div>Командир</div></div>
+            <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+              <defs><path id="sealArc" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs>
+              <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="5"/>
+              <circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-width="3"/>
+              <text font-size="17" letter-spacing="1.5" fill="currentColor"><textPath href="#sealArc">ТЕКИЛА-БУМ ОТРЯД 320 ★ ДЛЯ ЛИЧНЫХ ДЕЛ ★</textPath></text>
+              <text x="100" y="116" text-anchor="middle" font-size="44" fill="currentColor">320</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="id-after actions wait" id="idAfter">
+      <div class="order">Приказ выполнен.<br>Шлем закреплён за тобой.</div>
+      <div class="hbd" id="hbd">С днём рождения, рядовой!</div>
+      <button class="btn" id="saveId">Сохранить удостоверение</button>
+      <button class="btn ghost" id="again">Ещё один бум</button>
+    </div>
+  </section>
+
+  <div id="count"></div>
+  <div id="flash"></div>
+  <div id="cut"></div>
+  <canvas id="confetti"></canvas>
+  <div id="modal" role="dialog" aria-label="Удостоверение картинкой">
+    <img id="modalImg" alt="Удостоверение бойца">
+    <p id="modalText">Зажми картинку (на компьютере правый клик) и сохрани.</p>
+    <button class="btn" id="modalClose">Готово</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   НАСТРОЙКИ. Меняйте только этот блок.
+   ============================================================ */
+const CONFIG = {
+  name: "Шура",                     // обращение в тексте
+  fullName: "Шура",                 // для удостоверения: впишите имя и фамилию
+  callsign: "Фотокор",              // позывной
+  hint: "Шлем ближе, чем кажется. Осмотрись: отряд рядом.",   // подсказка, где спрятан шлем
+  night: "В ночь перед твоим днём рождения",                  // когда исчез рядовой Н.
+  extraAchievements: [              // свои пункты в «Основания для зачисления»
+    "Ни разу не замечен с пустой стопкой."
+  ]
+};
+/* ============================================================ */
+
+const CODE_H = 1770975563, PREFIX_H = 259146;   // хеш номера со шлема и его первых трёх цифр
+const KEY = "otbo320.v1";
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const h = s => { let x = 7; for (const c of s) x = (x * 31 + c.charCodeAt(0)) % 4294967296; return x; };
+const fmt = d => d ? `${d.slice(0,3)} ${d.slice(3,6)}-${d.slice(6)}` : "";
+const vibrate = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+
+/* ---------- state ---------- */
+const fresh = () => ({ stage: "new", attempts: 0, searchStart: null, foundAt: null, code: null, sworn: false, opened: false });
+let S = fresh();
+try {
+  const qs = location.search + location.hash;
+  if (/reset/.test(qs)) localStorage.removeItem(KEY);
+  const raw = localStorage.getItem(KEY);
+  if (raw) S = Object.assign(fresh(), JSON.parse(raw));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------- sound: synthesized, no files ---------- */
+const FX = (() => {
+  let ctx = null, master = null, noise = null, amb = null, muted = false;
+  function init() {
+    if (ctx) { if (ctx.state === "suspended") ctx.resume(); return; }
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = muted ? 0 : .9; master.connect(ctx.destination);
+      const len = ctx.sampleRate * 2; noise = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { ctx = null; }
+  }
+  function env(g, t, a, peak, dec) {
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + a);
+    g.gain.exponentialRampToValueAtTime(.0001, t + a + dec);
+  }
+  function nz(dur, o = {}) {
+    if (!ctx) return;
+    const { type = "bandpass", freq = 1000, q = 1, peak = .3, a = .005, delay = 0 } = o;
+    const t = ctx.currentTime + delay, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise; s.loop = true; f.type = type; f.frequency.value = freq; f.Q.value = q;
+    env(g, t, a, peak, dur); s.connect(f); f.connect(g); g.connect(master);
+    s.start(t, Math.random()); s.stop(t + a + dur + .05);
+  }
+  function tone(freq, dur, o = {}) {
+    if (!ctx) return;
+    const { type = "sine", peak = .3, a = .005, to = null, delay = 0 } = o;
+    const t = ctx.currentTime + delay, osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, t);
+    if (to) osc.frequency.exponentialRampToValueAtTime(to, t + dur);
+    env(g, t, a, peak, dur); osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t + a + dur + .05);
+  }
+  return {
+    init,
+    click() { nz(.02, { type: "highpass", freq: 2600, peak: .1 }); },
+    radio(d = .35) { nz(d, { freq: 1700, q: .7, peak: .16 }); },
+    stamp() { tone(150, .28, { peak: .7, to: 42 }); nz(.14, { type: "lowpass", freq: 900, peak: .55 }); },
+    key() { tone(1200, .04, { type: "square", peak: .05 }); },
+    beep(f = 880, d = .14) { tone(f, d, { type: "square", peak: .1 }); },
+    ok() { tone(660, .1, { type: "square", peak: .09 }); tone(990, .22, { type: "square", peak: .09, delay: .12 }); },
+    err() { tone(150, .35, { type: "sawtooth", peak: .16 }); tone(110, .35, { type: "sawtooth", peak: .12, delay: .05 }); },
+    heart() { tone(68, .14, { peak: .65, to: 40 }); tone(58, .18, { peak: .45, to: 34, delay: .18 }); },
+    boom() {
+      tone(120, 1.8, { peak: .95, to: 26 });
+      nz(1.5, { type: "lowpass", freq: 650, peak: .8, a: .002 });
+      nz(.3, { type: "highpass", freq: 2800, peak: .25 });
+      nz(2.2, { type: "highpass", freq: 6000, peak: .07, a: .2, delay: .3 });   // fizz
+    },
+    ambient(on) {
+      if (!ctx) return;
+      if (on && !amb) {
+        const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), o = ctx.createOscillator(), og = ctx.createGain();
+        s.buffer = noise; s.loop = true; f.type = "lowpass"; f.frequency.value = 320;
+        g.gain.value = 0; g.gain.setTargetAtTime(.05, ctx.currentTime, 1.5);
+        o.frequency.value = 52; og.gain.value = 0; og.gain.setTargetAtTime(.03, ctx.currentTime, 2);
+        s.connect(f); f.connect(g); g.connect(master); o.connect(og); og.connect(master); s.start(); o.start();
+        amb = { s, o, g, og };
+      } else if (!on && amb) {
+        const a = amb; amb = null;
+        a.g.gain.setTargetAtTime(0, ctx.currentTime, .4); a.og.gain.setTargetAtTime(0, ctx.currentTime, .4);
+        setTimeout(() => { try { a.s.stop(); a.o.stop(); } catch (e) {} }, 2000);
+      }
+    },
+    toggle() {
+      muted = !muted;
+      if (master) master.gain.setTargetAtTime(muted ? 0 : .9, ctx.currentTime, .05);
+      return muted;
+    }
+  };
+})();
+
+$("#mute").addEventListener("click", () => {
+  FX.init();
+  const m = FX.toggle();
+  $("#mute").classList.toggle("muted", m);
+  $("#mute").setAttribute("aria-label", m ? "Включить звук" : "Выключить звук");
+});
+
+/* ---------- screen stays awake during the quest ---------- */
+let wakeWanted = false;
+async function wake() { wakeWanted = true; try { if (navigator.wakeLock) await navigator.wakeLock.request("screen"); } catch (e) {} }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && wakeWanted) wake(); });
+
+/* ---------- typewriter ---------- */
+function type(el, segs, { speed = 26, sound = true } = {}) {
+  if (typeof segs === "string") segs = [segs];
+  el.innerHTML = "";
+  const tok = { done: false }; el._tok = tok;
+  const parts = segs.map(s => {
+    const sp = document.createElement("span");
+    if (typeof s !== "string" && s.cls) sp.className = s.cls;
+    el.appendChild(sp);
+    return [sp, typeof s === "string" ? s : s.t];
+  });
+  return new Promise(res => {
+    tok.finish = () => {
+      if (tok.done) return;
+      tok.done = true; parts.forEach(([sp, t]) => sp.textContent = t);
+      el.classList.remove("typing"); res();
+    };
+    if (reduced) { tok.finish(); return; }
+    el.classList.add("typing");
+    let si = 0, ci = 0;
+    (function step() {
+      if (el._tok !== tok || tok.done) return;
+      if (si >= parts.length) { tok.finish(); return; }
+      const [sp, t] = parts[si];
+      if (ci < t.length) {
+        sp.textContent = t.slice(0, ++ci);
+        const ch = t[ci - 1];
+        if (sound && ci % 2 && ch !== " ") FX.click();
+        setTimeout(step, ch === "\n" ? speed * 9 : /[.,:!?]/.test(ch) ? speed * 7 : speed);
+      } else { si++; ci = 0; step(); }
+    })();
+  });
+}
+function skip(el) { if (el && el._tok && !el._tok.done) el._tok.finish(); }
+
+/* ---------- video helper: muted inline, tap-to-play fallback (Low Power Mode) ---------- */
+function playV(v, from0 = true) {
+  if (!v) return;
+  if (from0) { try { v.currentTime = 0; } catch (e) {} }
+  const holder = v.closest(".panel") || v.parentElement;
+  const p = v.play();
+  if (p && p.catch) p.then(() => holder && holder.classList.remove("needs-tap")).catch(() => holder && holder.classList.add("needs-tap"));
+}
+
+/* ---------- scene engine ---------- */
+const hooks = {};
+let current = null;
+function go(id, arg) {
+  const next = document.getElementById(id);
+  if (!next) return;
+  if (current) {
+    current.classList.remove("on");
+    current.querySelectorAll("video").forEach(v => v.pause());
+    hooks[current.id] && hooks[current.id].leave && hooks[current.id].leave();
+  }
+  const cut = $("#cut"); cut.classList.remove("hit"); void cut.offsetWidth; cut.classList.add("hit");
+  FX.radio(.16);
+  next.classList.add("on"); current = next;
+  hooks[id] && hooks[id].enter && hooks[id].enter(arg);
+}
+
+/* ============================================================
+   АКТ 1. Рассекреченные материалы
+   ============================================================ */
+const DOCS = [
+  { label: "Происхождение", tag: "Вещдок 01", v: "V1_intro", pos: "50% 74%",
+    text: ["Шлем. Найден при выходе из окружения.\nНа нём надпись, которую все читают по-разному."] },
+  { label: "Отряд 320", tag: "Архив ОТБО-320", i: "I1_squad", pos: "50% 62%",
+    text: ["Создан в тайне. Состав засекречен.\nНикто из бойцов не знал задачу целиком. Знали одно: приказ выполняется до конца."] },
+  { label: "Спецзадача", tag: "Фото 1/1", i: "I2_soldier", pos: "50% 42%",
+    text: ["Особая задача отряда не раскрывается.\nИзвестно одно: после каждой операции на столе не оставалось ничего."] },
+  { label: "Цепочка", tag: "Вещдок 02", v: "V2_hands", pos: "50% 55%",
+    text: [`Шлем передавали из рук в руки. Каждый ждал своего часа.\nПоследним его носил рядовой Н. ${CONFIG.night} он исчез. Шлем остался.`] },
+  { label: "Последнее донесение", tag: "Вещдок 03", i: "I3_table", pos: "50% 70%", final: true,
+    text: ["Шлем спрятан. Кто его найдёт, получит доступ к досье. Номер на шлеме открывает отряд.\nПодсказка: ", { t: CONFIG.hint, cls: "hl" }] }
+];
+
+const docsHost = $("#docs");
+DOCS.forEach((d, i) => {
+  const id = "doc-" + (i + 1);
+  const media = d.v
+    ? `<video muted playsinline loop preload="${i === 0 ? "auto" : "metadata"}" poster="media/${d.v}_poster.jpg" src="media/${d.v}.mp4" style="object-position:${d.pos}"></video><button class="tapplay">Нажми, чтобы воспроизвести</button>`
+    : `<img src="media/${d.i}.jpg" alt="" style="object-position:${d.pos}">`;
+  const actions = d.final
+    ? `<button class="btn" data-go="code">Шлем у меня. Ввести номер</button><p class="note">Сначала найди шлем. Номер написан на нём.</p>`
+    : `<button class="btn" data-go="doc-${i + 2}">Далее</button>`;
+  docsHost.insertAdjacentHTML("beforeend", `
+    <section class="scene doc" id="${id}">
+      <header class="bar">${i ? `<button class="back" data-go="doc-${i}">‹ Назад</button>` : ""}<span>Документ ${i + 1} / ${DOCS.length}</span><span class="secret">Сов. секретно</span></header>
+      <figure class="panel" style="margin:4px 6px 0">${media}<span class="tag">${d.tag}</span></figure>
+      <div class="caption"><div class="cap-label">${d.label}</div><p class="cap-text"></p></div>
+      <div class="actions wait">${actions}</div>
+    </section>`);
+  const sc = document.getElementById(id);
+  const cap = sc.querySelector(".cap-text"), acts = sc.querySelector(".actions");
+  sc.querySelector(".caption").addEventListener("click", () => skip(cap));
+  sc.querySelector(".panel").addEventListener("click", () => skip(cap));
+  hooks[id] = {
+    enter() {
+      FX.ambient(true);
+      if (S.stage === "new") { S.stage = "act1"; save(); }
+      if (d.final && (S.stage === "new" || S.stage === "act1")) { S.stage = "search"; if (!S.searchStart) S.searchStart = Date.now(); save(); }
+      const v = sc.querySelector("video"), img = sc.querySelector(".panel img");
+      if (v) playV(v);
+      if (img && !reduced) { img.classList.remove("kb"); void img.offsetWidth; img.classList.add("kb"); }
+      const next = DOCS[i + 1];
+      if (next && next.v) { const nv = document.getElementById("doc-" + (i + 2)).querySelector("video"); nv && (nv.preload = "auto"); }
+      if (d.final) { const av = $("#vAccess"); if (av.preload !== "auto") { av.preload = "auto"; av.load(); } }
+      acts.classList.add("wait");
+      type(cap, d.text).then(() => acts.classList.remove("wait"));
+    },
+    leave() { skip(cap); }
+  };
+});
+app.addEventListener("click", e => {
+  const t = e.target.closest(".tapplay");
+  if (t) { const v = t.parentElement.querySelector("video"); if (v) playV(v, false); return; }
+  const b = e.target.closest("[data-go]");
+  if (b) go(b.dataset.go);
+});
+
+/* ---------- boot ---------- */
+const RESUME = { act1: "doc-1", search: "doc-5", unlocked: "dossier", done: "id" };
+let resetArmed = false;
+hooks.boot = {
+  async enter() {
+    const wave = $("#wave"); wave.innerHTML = "";
+    for (let i = 0; i < 28; i++) { const b = document.createElement("i"); b.style.animationDelay = (Math.random() * -1).toFixed(2) + "s"; b.style.animationDuration = (.6 + Math.random() * .8).toFixed(2) + "s"; wave.appendChild(b); }
+    const resumed = S.stage !== "new";
+    $("#bootActions").classList.add("wait");
+    $("#bootGo").textContent = resumed ? "Продолжить" : "Принять передачу";
+    $("#bootReset").hidden = !resumed; resetArmed = false; $("#bootReset").textContent = "Начать сначала";
+    $("#radioBig").innerHTML = "";
+    const log = resumed
+      ? "ОТБО-320 // ЗАКРЫТЫЙ КАНАЛ\nСВЯЗЬ ПРЕРВАНА ........ 1\nВОССТАНОВЛЕНИЕ ........ OK\nСЕАНС НАЙДЕН ......... OK"
+      : "ОТБО-320 // ЗАКРЫТЫЙ КАНАЛ\nШИФРОВАНИЕ ........... OK\nПОИСК АДРЕСАТА ....... OK\nКАНАЛ ЗАЩИЩЁН ........ OK";
+    await type($("#radioLog"), log, { speed: 18, sound: false });
+    await sleep(250);
+    const big = $("#radioBig");
+    big.innerHTML = `${resumed ? "Связь восстановлена" : "Входящая передача"}<small>Адресат: рядовой ${CONFIG.name}</small>`;
+    big.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 500, easing: "ease-out", fill: "both" });
+    await sleep(400);
+    $("#bootActions").classList.remove("wait");
+  }
+};
+$("#bootGo").addEventListener("click", () => {
+  FX.init(); FX.radio(.5); wake();
+  skip($("#radioLog"));
+  go(RESUME[S.stage] || "doc-1");
+});
+$("#bootReset").addEventListener("click", () => {
+  if (!resetArmed) { resetArmed = true; $("#bootReset").textContent = "Точно? Весь прогресс сотрётся. Нажми ещё раз"; return; }
+  S = fresh(); save(); go("boot");
+});
+
+/* ============================================================
+   Ввод номера со шлема
+   ============================================================ */
+let digits = "";
+const cells = $("#cells");
+function drawCells() {
+  cells.innerHTML = "";
+  for (let i = 0; i < 8; i++) {
+    if (i === 3) cells.insertAdjacentHTML("beforeend", `<span class="sep"></span>`);
+    if (i === 6) cells.insertAdjacentHTML("beforeend", `<span class="dash">-</span>`);
+    const c = document.createElement("span");
+    c.className = "cell" + (i === digits.length ? " cur" : "");
+    c.textContent = digits[i] || "";
+    cells.appendChild(c);
+  }
+}
+const keys = $("#keys");
+["1","2","3","4","5","6","7","8","9","⌫","0","ОК"].forEach(k => {
+  const b = document.createElement("button");
+  b.className = "key" + (k === "⌫" || k === "ОК" ? " fn" : "");
+  b.textContent = k; b.dataset.k = k;
+  if (k === "⌫") b.setAttribute("aria-label", "Стереть");
+  keys.appendChild(b);
+});
+let checking = false;
+function press(k) {
+  if (checking) return;
+  const scr = $("#screen");
+  if (scr.classList.contains("bad")) { scr.classList.remove("bad"); digits = ""; }
+  if (k === "⌫") digits = digits.slice(0, -1);
+  else if (k === "ОК") { if (digits.length) check(); return; }
+  else if (digits.length < 8) digits += k;
+  FX.key(); drawCells();
+  if (digits.length === 8) check();
+}
+keys.addEventListener("click", e => { const b = e.target.closest(".key"); if (b) press(b.dataset.k); });
+document.addEventListener("keydown", e => {
+  if (!current || current.id !== "code") return;
+  if (/^[0-9]$/.test(e.key)) press(e.key);
+  else if (e.key === "Backspace") press("⌫");
+  else if (e.key === "Enter") press("ОК");
+});
+const ERR = [
+  () => `Неверный код. Ты точно ${CONFIG.name}?`,
+  () => "Отряд ждёт. Номер на шлеме, не на бутылке.",
+  () => "Подсказка: боковая сторона шлема, чёрный маркер, две строки.",
+  n => `Попытка №${n}. Командование начинает волноваться. Цифры в две строки: сначала верхняя.`
+];
+async function check() {
+  checking = true;
+  const scr = $("#screen"), msg = $("#msg");
+  msg.textContent = "Сверка с архивом…"; FX.radio(.4);
+  await sleep(650);
+  if (h(digits) === CODE_H) {
+    scr.classList.add("good"); FX.ok(); vibrate(60);
+    S.code = digits; S.foundAt = Date.now(); S.stage = "unlocked"; save();
+    msg.textContent = "Код принят. Личность подтверждена.";
+    await sleep(1300);
+    checking = false;
+    go("access");
+    return;
+  }
+  S.attempts++; save();
+  scr.classList.add("bad"); FX.err(); vibrate([80, 60, 80]);
+  $("#device").classList.remove("shake"); void $("#device").offsetWidth; $("#device").classList.add("shake");
+  const n = S.attempts;
+  msg.textContent = (digits.length >= 3 && h(digits.slice(0, 3)) === PREFIX_H && digits.length === 8)
+    ? "Отряд 320 опознан. Взвод и номер не сходятся, сверь вторую строку."
+    : ERR[Math.min(n, ERR.length) - 1](n);
+  checking = false;
+}
+hooks.code = {
+  enter() {
+    digits = ""; checking = false;
+    ["#vAccess", "#vNod", "#vBoom"].forEach(q => { const v = $(q); if (v.preload !== "auto") { v.preload = "auto"; v.load(); } });
+    $("#screen").classList.remove("bad", "good");
+    $("#msg").textContent = S.attempts ? "Канал открыт. Попробуй ещё раз." : "Ожидание ввода";
+    drawCells();
+  }
+};
+$("#codeBack").addEventListener("click", () => go("doc-5"));
+
+/* ============================================================
+   Доступ разрешён (V3, штамп ложится вместе с рукой в кадре)
+   ============================================================ */
+let accessTimer = 0;
+hooks.access = {
+  enter() {
+    FX.ambient(true);
+    const v = $("#vAccess"), st = $("#accessStamp"), acts = $("#accessActions");
+    st.classList.remove("hit"); acts.classList.add("wait");
+    let stamped = false;
+    const doStamp = () => {
+      if (stamped) return; stamped = true;
+      st.classList.add("hit"); FX.stamp(); vibrate(70);
+      setTimeout(() => acts.classList.remove("wait"), 900);
+    };
+    v.ontimeupdate = () => { if (v.currentTime >= 5.9) doStamp(); };
+    v.onended = doStamp;
+    playV(v);
+    clearTimeout(accessTimer);
+    accessTimer = setTimeout(doStamp, 9000);      // если видео не запустилось
+    st.onclick = doStamp;
+  },
+  leave() { clearTimeout(accessTimer); }
+};
+$("#vAccess").addEventListener("click", () => { const v = $("#vAccess"); if (v.paused) playV(v, false); });
+$("#accessGo").addEventListener("click", () => go("dossier"));
+
+/* ============================================================
+   Досье отряда
+   ============================================================ */
+let dStep = 0;
+const dSheet = $("#dSheet"), dNext = $("#dNext");
+function reveal(n) {
+  const el = dSheet.querySelector(`.rv[data-r="${n}"]`);
+  if (el) { el.classList.add("in"); setTimeout(() => dSheet.scrollTo({ top: dSheet.scrollHeight, behavior: reduced ? "auto" : "smooth" }), 60); }
+}
+function scramble(el, target, ms = 1300) {
+  const abc = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ0123456789#%";
+  return new Promise(res => {
+    if (reduced) { el.textContent = target; res(); return; }
+    const t0 = performance.now();
+    (function f(t) {
+      const p = Math.min(1, (t - t0) / ms), fixed = Math.floor(p * target.length);
+      el.textContent = target.split("").map((c, i) => i < fixed || c === " " ? c : abc[Math.random() * abc.length | 0]).join("");
+      if (p < 1) { if (Math.random() < .5) FX.click(); requestAnimationFrame(f); } else res();
+    })(t0);
+  });
+}
+async function dossierStep() {
+  dNext.disabled = true;
+  if (dStep === 0) {
+    reveal(1);
+    const d = S.code || "";
+    const rows = [[d.slice(0, 3), "Отряд. Текила-бум, особого назначения."], [d.slice(3, 6), "Взвод. Тот, что за твоим столом."], [d.slice(6), "Личный номер бойца. Твой."]];
+    const dec = $("#decode"); dec.innerHTML = rows.map(r => `<div class="row"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+    for (const r of dec.querySelectorAll(".row")) { await sleep(550); r.classList.add("in"); FX.stamp(); }
+    dNext.textContent = "Далее";
+  } else if (dStep === 1) {
+    reveal(2); $("#mottoRu").textContent = ""; $("#shots").classList.remove("hit");
+    dNext.textContent = "Расшифровать";
+  } else if (dStep === 2) {
+    await scramble($("#mottoRu"), "Рождены убивать.");
+    await sleep(500);
+    $("#shots").classList.add("hit"); FX.stamp(); vibrate(60);
+    await sleep(500);
+    dNext.textContent = "Далее";
+  } else if (dStep === 3) {
+    reveal(4);
+    dNext.textContent = "Личное дело кандидата";
+  } else {
+    go("file"); return;
+  }
+  dStep++;
+  dNext.disabled = false;
+}
+hooks.dossier = {
+  async enter() {
+    FX.ambient(false);
+    dStep = 0;
+    dSheet.querySelectorAll(".rv").forEach(r => r.classList.remove("in"));
+    dSheet.scrollTop = 0;
+    dNext.disabled = true; dNext.textContent = "Далее";
+    await sleep(350);
+    reveal(0); FX.stamp(); vibrate(50);
+    await sleep(500);
+    dNext.disabled = false;
+  }
+};
+dNext.addEventListener("click", dossierStep);
+
+/* ============================================================
+   Личное дело кандидата
+   ============================================================ */
+const plural = (n, a, b, c) => { const m = n % 10, mm = n % 100; return m === 1 && mm !== 11 ? a : m >= 2 && m <= 4 && (mm < 10 || mm >= 20) ? b : c; };
+function achievements() {
+  const list = [];
+  if (S.searchStart && S.foundAt) {
+    const mins = Math.round((S.foundAt - S.searchStart) / 60000);
+    list.push(mins < 1 ? "Нашёл спрятанный шлем меньше чем за минуту." : `Нашёл спрятанный шлем за ${mins} ${plural(mins, "минуту", "минуты", "минут")}.`);
+  }
+  list.push(S.attempts ? `Ввёл номер со шлема с ${S.attempts + 1}-й попытки. Отряд ценит упорство.` : "Ввёл номер со шлема с первой попытки.");
+  return list.concat(CONFIG.extraAchievements);
+}
+let nodTimer = 0;
+hooks.file = {
+  async enter() {
+    const ph = $("#photo"), v = $("#vNod"), acts = $("#fActions"), fs = $("#fSheet");
+    ph.classList.remove("alive"); acts.classList.add("wait"); $("#verdict").classList.remove("hit"); fs.scrollTop = 0;
+    clearTimeout(nodTimer);
+    nodTimer = setTimeout(() => {                 // фото «оживает»
+      try { v.currentTime = 0; } catch (e) {}
+      const p = v.play(); if (p && p.then) p.then(() => ph.classList.add("alive")).catch(() => {});
+    }, 1800);
+    const F = [["Кандидат", CONFIG.fullName], ["Позывной", CONFIG.callsign], ["Личный номер", fmt(S.code)], ["Допуск", "Подтверждён"]];
+    const host = $("#fields");
+    host.innerHTML = F.map(f => `<div class="f"><label>${f[0]}</label><div></div></div>`).join("");
+    const vals = host.querySelectorAll(".f div");
+    const ach = $("#ach"); ach.innerHTML = "";
+    await sleep(400);
+    for (let i = 0; i < F.length; i++) await type(vals[i], F[i][1], { speed: 32 });
+    for (const a of achievements()) {
+      const li = document.createElement("li"); const sp = document.createElement("span"); li.appendChild(sp); ach.appendChild(li);
+      await type(sp, a, { speed: 16 });
+      await sleep(150);
+    }
+    await sleep(300);
+    $("#verdict").classList.add("hit"); FX.stamp(); vibrate(70);
+    fs.scrollTo({ top: fs.scrollHeight, behavior: reduced ? "auto" : "smooth" });
+    await sleep(600);
+    acts.classList.remove("wait");
+  },
+  leave() { clearTimeout(nodTimer); }
+};
+$("#fSheet").addEventListener("click", () => $("#fSheet").querySelectorAll(".typing").forEach(skip));
+$("#fGo").addEventListener("click", () => go("ritual", { from: 0 }));
+
+/* ============================================================
+   Посвящение
+   ============================================================ */
+const OATH = [
+  `Я, рядовой ${CONFIG.name}, вступаю в ряды Текила-бум отряда 320.`,
+  "Клянусь не проливать.",
+  "Клянусь не отставать от товарищей.",
+  "Клянусь допивать до конца.",
+  "Born to kill."
+];
+$("#oath").innerHTML = OATH.map(l => `<p>${l}</p>`).join("");
+let rPlan = [0, 1, 2, 3], rIdx = 0;
+function showStep() {
+  const s = rPlan[rIdx];
+  document.querySelectorAll(".rstep").forEach(el => el.classList.toggle("on", +el.dataset.s === s));
+  document.querySelectorAll("#pips i").forEach((p, i) => p.classList.toggle("done", i <= s));
+  if (s === 2) resetHold();
+}
+function nextStep() { FX.stamp(); rIdx++; if (rIdx < rPlan.length) showStep(); }
+hooks.ritual = {
+  enter(arg) {
+    const again = arg && arg.again;
+    rPlan = again ? [1, 3] : [0, 1, 2, 3];
+    rIdx = 0;
+    $("#rLabel").textContent = again ? "Повторный залп" : "Посвящение";
+    showStep();
+  }
+};
+document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", nextStep));
+
+/* hold-to-swear */
+const HOLD_MS = 10000;
+let hp = 0, holding = false, last = 0, beat = 0, sworn = false;
+const holdBtn = $("#holdBtn"), oathLines = [...document.querySelectorAll("#oath p")];
+function resetHold() {
+  hp = 0; holding = false; sworn = false; renderHold();
+  $("#holdLabel").textContent = "Зажми и читай";
+  const acc = document.querySelector(".rstep[data-s='2'] .accepted"); acc && acc.remove();
+  holdBtn.hidden = false;
+}
+function renderHold() {
+  $("#holdFill").style.width = (hp * 100) + "%";
+  oathLines.forEach((l, i) => l.classList.toggle("lit", hp > i / oathLines.length));
+}
+function holdFrame(t) {
+  if (!holding) return;
+  const dt = Math.min(100, t - last); last = t;
+  hp = Math.min(1, hp + dt / HOLD_MS); beat += dt;
+  if (beat > 850) { beat = 0; FX.heart(); vibrate(25); }
+  renderHold();
+  if (hp >= 1) { holding = false; holdBtn.classList.remove("pressing"); sworn = true; onSworn(); return; }
+  requestAnimationFrame(holdFrame);
+}
+function holdStart(e) {
+  if (sworn) return;
+  if (e && e.cancelable) e.preventDefault();
+  FX.init();
+  if (holding) return;
+  holding = true; last = performance.now(); beat = 900;
+  holdBtn.classList.add("pressing"); $("#holdLabel").textContent = "Читай вслух";
+  requestAnimationFrame(holdFrame);
+}
+function holdStop() {
+  if (!holding) return;
+  holding = false; holdBtn.classList.remove("pressing");
+  if (!sworn && hp > 0) $("#holdLabel").textContent = "Пауза. Зажми снова";
+}
+holdBtn.addEventListener("pointerdown", e => { try { holdBtn.setPointerCapture(e.pointerId); } catch (x) {} holdStart(e); });
+["pointerup", "pointercancel", "lostpointercapture"].forEach(ev => holdBtn.addEventListener(ev, holdStop));
+holdBtn.addEventListener("contextmenu", e => e.preventDefault());
+holdBtn.addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && !e.repeat) holdStart(e); });
+holdBtn.addEventListener("keyup", e => { if (e.key === " " || e.key === "Enter") holdStop(); });
+async function onSworn() {
+  S.sworn = true; save();
+  holdBtn.hidden = true;
+  const acc = document.createElement("div"); acc.className = "accepted"; acc.textContent = "Присяга принята";
+  holdBtn.after(acc); FX.stamp(); vibrate([60, 40, 60]);
+  await sleep(1500);
+  nextStep();
+}
+
+/* fire */
+let firing = false;
+$("#fire").addEventListener("click", async () => {
+  if (firing) return; firing = true;
+  FX.init();
+  const c = $("#count"); c.classList.add("on");
+  for (const n of ["3", "2", "1"]) {
+    c.innerHTML = `<span>${n}</span>`; FX.beep(660, .16); vibrate(40);
+    await sleep(900);
+  }
+  c.classList.remove("on"); c.innerHTML = "";
+  firing = false;
+  go("boom");
+});
+
+/* ============================================================
+   БУМ
+   ============================================================ */
+let boomTimer = 0;
+hooks.boom = {
+  enter() {
+    S.stage = "done"; save();
+    const f = $("#flash"), w = $("#boomWord"), acts = $("#boomActions"), v = $("#vBoom");
+    [f, w].forEach(el => { el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); });
+    app.classList.remove("quake"); void app.offsetWidth; app.classList.add("quake");
+    FX.boom(); vibrate([120, 50, 220]);
+    acts.classList.add("wait");
+    $("#boomGo").textContent = S.opened ? "К удостоверению" : "Получить удостоверение";
+    playV(v);
+    const show = () => acts.classList.remove("wait");
+    v.onended = show;
+    clearTimeout(boomTimer); boomTimer = setTimeout(show, 7000);
+  },
+  leave() { clearTimeout(boomTimer); app.classList.remove("quake"); }
+};
+$("#vBoom").addEventListener("click", () => { const v = $("#vBoom"); if (v.paused) playV(v, false); });
+$("#boomGo").addEventListener("click", () => go("id"));
+
+/* ============================================================
+   Удостоверение
+   ============================================================ */
+const today = () => { const d = S.foundAt ? new Date(S.foundAt) : new Date(); return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" }); };
+function fillId() {
+  const map = { fullName: CONFIG.fullName, callsign: CONFIG.callsign, personal: (S.code || "").slice(6) || "68", date: today() };
+  document.querySelectorAll("#idcard [data-k]").forEach(el => el.textContent = map[el.dataset.k]);
+}
+function openId() {
+  const card = $("#idcard");
+  if (card.classList.contains("open")) return;
+  card.classList.add("open"); FX.stamp(); vibrate(60);
+  $("#idHint").textContent = `Рядовой ${CONFIG.name}, личный номер ${(S.code || "").slice(6)}`;
+  S.opened = true; save();
+  setTimeout(() => { confetti(); $("#idAfter").classList.remove("wait"); }, 700);
+}
+hooks.id = {
+  enter() {
+    fillId();
+    const card = $("#idcard");
+    if (S.opened) { card.classList.add("open"); $("#idHint").textContent = `Рядовой ${CONFIG.name}, личный номер ${(S.code || "").slice(6)}`; $("#idAfter").classList.remove("wait"); }
+    else { card.classList.remove("open"); $("#idHint").textContent = "Нажми на удостоверение, чтобы открыть"; $("#idAfter").classList.add("wait"); }
+  }
+};
+$("#idcard").addEventListener("click", openId);
+$("#idcard").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openId(); } });
+$("#again").addEventListener("click", () => go("ritual", { again: true }));
+
+/* confetti: tequila gold and lime */
+function confetti() {
+  if (reduced) return;
+  const cv = $("#confetti"), r = app.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  cv.width = r.width * dpr; cv.height = r.height * dpr;
+  const g = cv.getContext("2d"); g.scale(dpr, dpr);
+  const cols = ["#f2b146", "#a9c24c", "#e9dec3", "#b3281d"];
+  const P = Array.from({ length: 140 }, () => ({
+    x: r.width / 2, y: r.height * .45, vx: (Math.random() - .5) * 12, vy: -Math.random() * 13 - 3,
+    s: 5 + Math.random() * 7, a: Math.random() * 6, va: (Math.random() - .5) * .4, c: cols[Math.random() * cols.length | 0]
+  }));
+  const t0 = performance.now();
+  (function f(t) {
+    g.clearRect(0, 0, r.width, r.height);
+    P.forEach(p => { p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+    if (t - t0 < 3200) requestAnimationFrame(f); else g.clearRect(0, 0, r.width, r.height);
+  })(t0);
+}
+
+/* save ID as an image: drawn on canvas, shown as <img> so a long press saves it anywhere */
+const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+function fitText(g, text, maxW, font, size) {
+  let s = size; g.font = `${font.replace("{s}", s)}`;
+  while (g.measureText(text).width > maxW && s > 18) { s -= 2; g.font = font.replace("{s}", s); }
+}
+async function renderId() {
+  try { await Promise.all([document.fonts.load('700 40px "Oswald"'), document.fonts.load('26px "PT Mono"'), document.fonts.load('600 60px "Caveat"')]); } catch (e) {}
+  const W = 1080, H = 1512, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  const OS = '"Oswald","Arial Narrow",Impact,sans-serif', MO = '"PT Mono","Courier New",monospace';
+  g.fillStyle = "#e9dec3"; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 3000; i++) { g.fillStyle = `rgba(70,50,20,${Math.random() * .07})`; g.fillRect(Math.random() * W, Math.random() * H, 2, 2); }
+  g.strokeStyle = "#1c1912"; g.lineWidth = 10; g.strokeRect(40, 40, W - 80, H - 80);
+  g.fillStyle = "#1c1912"; g.textAlign = "center"; g.textBaseline = "alphabetic";
+  g.font = `700 70px ${OS}`; g.fillText("УДОСТОВЕРЕНИЕ БОЙЦА", W / 2, 160);
+  g.fillStyle = "#b3281d"; g.font = `500 36px ${OS}`; g.fillText("ТЕКИЛА-БУМ ОТРЯД 320", W / 2, 215);
+  g.fillStyle = "#1c1912"; g.fillRect(90, 248, W - 180, 6);
+  const ph = await loadImg("media/I5_shura.jpg");
+  g.drawImage(ph, 64, 40, 640, 853, 90, 290, 390, 520);
+  g.lineWidth = 6; g.strokeRect(90, 290, 390, 520);
+  g.textAlign = "left";
+  const label = (t, x, y) => { g.fillStyle = "#6a5e45"; g.font = `26px ${MO}`; g.fillText(t.toUpperCase(), x, y); };
+  const value = (t, x, y, maxW, size = 54) => { g.fillStyle = "#1c1912"; fitText(g, t.toUpperCase(), maxW, `700 {s}px ${OS}`, size); g.fillText(t.toUpperCase(), x, y); };
+  const top = [["Фамилия, имя", CONFIG.fullName], ["Позывной", CONFIG.callsign], ["Звание", "Рядовой"]];
+  top.forEach((f, i) => { label(f[0], 520, 340 + i * 170); value(f[1], 520, 400 + i * 170, 470); });
+  const rows = [["Подразделение", "Отряд 320 · взвод 410"], ["Личный номер", (S.code || "").slice(6) || "68"], ["Девиз", "Born to kill"], ["Зачислен", today()]];
+  rows.forEach((f, i) => { const x = i % 2 ? 590 : 90, y = 900 + Math.floor(i / 2) * 160; label(f[0], x, y); value(f[1], x, y + 60, 410, 48); });
+  label("Командир отряда", 90, 1270);
+  g.fillStyle = "#1d3b8f"; g.font = `600 92px "Caveat","Segoe Print",cursive`;
+  g.save(); g.translate(100, 1370); g.rotate(-.07); g.fillText("Командир", 0, 0); g.restore();
+  // seal
+  g.save(); g.translate(820, 1300); g.rotate(-.25); g.strokeStyle = "rgba(179,40,29,.88)"; g.fillStyle = "rgba(179,40,29,.88)";
+  g.lineWidth = 8; g.beginPath(); g.arc(0, 0, 150, 0, Math.PI * 2); g.stroke();
+  g.lineWidth = 5; g.beginPath(); g.arc(0, 0, 92, 0, Math.PI * 2); g.stroke();
+  g.font = `700 25px ${OS}`; g.textAlign = "center";
+  const ring = "ТЕКИЛА-БУМ ОТРЯД 320 ★ ДЛЯ ЛИЧНЫХ ДЕЛ ★ ";
+  const step = (Math.PI * 2) / ring.length;
+  for (let i = 0; i < ring.length; i++) { g.save(); g.rotate(i * step - Math.PI / 2); g.translate(0, -114); g.fillText(ring[i], 0, 0); g.restore(); }
+  g.font = `700 76px ${OS}`; g.fillText("320", 0, 26);
+  g.restore();
+  return c.toDataURL("image/jpeg", .92);
+}
+$("#saveId").addEventListener("click", async () => {
+  const m = $("#modal"), img = $("#modalImg"), txt = $("#modalText");
+  txt.textContent = "Печатаем удостоверение…"; img.removeAttribute("src"); m.classList.add("on");
+  try { img.src = await renderId(); txt.textContent = "Зажми картинку (на компьютере правый клик) и сохрани."; }
+  catch (e) { img.src = "media/I5_shura.jpg"; txt.textContent = "Не получилось нарисовать картинку. Сделай скриншот удостоверения."; }
+});
+$("#modalClose").addEventListener("click", () => $("#modal").classList.remove("on"));
+
+/* ---------- start ---------- */
+go("boot");
+</script>
+</body>
+</html>
