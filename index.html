@@ -79,6 +79,36 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
   font:700 16px/1 var(--f-display);letter-spacing:.16em;color:var(--paper)}
 .needs-tap .tapplay{display:grid}
 
+/* text-only document: teletype, selection checklist, warnings */
+.tele{position:relative;flex:1 1 auto;min-height:0;margin:4px 6px 0;padding:22px 16px 46px;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;gap:12px;background:#0b0a08;border:3px solid var(--ink);
+  box-shadow:0 0 0 6px var(--paper),0 22px 40px #000c;transform:rotate(-.6deg);color:var(--amber);font:14px/1.6 var(--f-type)}
+.tele::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#0000 0 2px,#0000004d 2px 4px)}
+.tele .tag{position:absolute;z-index:3;left:10px;top:12px;background:var(--paper);color:var(--ink);
+  font:700 11px/1 var(--f-display);letter-spacing:.14em;padding:5px 7px 4px;transform:rotate(-2deg)}
+.tele-lines{white-space:pre-line;text-shadow:0 0 8px #f2b14666}
+.tele.warn{background:repeating-linear-gradient(180deg,#0000 0 27px,#1c191212 27px 28px),var(--paper);color:var(--ink);align-items:center}
+.tele.warn::before{display:none}
+.wstamp{color:var(--red);border:6px double var(--red);padding:10px 16px 6px;text-align:center;text-transform:uppercase;
+  font:700 clamp(36px,12vw,54px)/1 var(--f-display);letter-spacing:.04em;transform:rotate(-8deg) scale(2.2);opacity:0;max-width:100%}
+.wstamp.hit{animation:wst .32s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes wst{to{opacity:1;transform:rotate(-8deg) scale(1)}}
+.wstamp.sign{position:absolute;bottom:52px;right:14px;font-size:26px;border-width:4px;transform:rotate(9deg) scale(2.2)}
+.wstamp.sign.hit{animation:wsg .32s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes wsg{to{opacity:1;transform:rotate(9deg) scale(1)}}
+.crit{display:grid;grid-template-columns:1fr auto auto;gap:6px 10px;align-items:center;font:14px/1.3 var(--f-type)}
+.crit .c{display:contents}
+.crit .c>*{opacity:0;transition:opacity .3s}
+.crit .c.in>*{opacity:1}
+.crit .k{color:var(--paper-dim);text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.crit .v{color:var(--paper);text-align:right}
+.crit .m{font:700 15px/1 var(--f-display);padding:3px 6px 1px;border:2px solid var(--lime);color:var(--lime);transform:rotate(-4deg)}
+.crit .m.q{border-color:#ff5a4a;color:#ff5a4a}
+.crit .c.big .v{font:700 26px/1 var(--f-display);color:var(--amber)}
+.ph-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;
+  background:repeating-linear-gradient(45deg,#0000 0 10px,#ffffff08 10px 20px),#0d0c0a;color:var(--paper-dim);font:13px/1.4 var(--f-type)}
+.ph-empty b{font:700 26px/1 var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--red);border:3px solid var(--red);padding:8px 12px 4px;transform:rotate(-4deg)}
+
 /* comic caption */
 .caption{position:relative;z-index:2;margin:-34px 2px 0;background:var(--paper);color:var(--ink);border:2px solid var(--ink);
   box-shadow:5px 5px 0 #000;padding:12px 14px 14px;transform:rotate(.5deg)}
@@ -211,6 +241,25 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
   font:700 22px/1.05 var(--f-display);text-transform:uppercase;text-align:center;transform:rotate(-5deg) scale(2);opacity:0}
 .verdict.hit{animation:stampV .3s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes stampV{to{opacity:1;transform:rotate(-5deg) scale(1)}}
+
+/* ---------- squad roll call ---------- */
+.panel .sq-stamp{position:absolute;z-index:3;right:12px;bottom:46px;color:var(--red);background:#e9dec3e6;border:5px solid var(--red);
+  padding:8px 12px 4px;font:700 30px/1 var(--f-display);text-transform:uppercase;transform:rotate(-10deg) scale(2.2);opacity:0}
+.panel .sq-stamp.hit{animation:sqs .32s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes sqs{to{opacity:1;transform:rotate(-10deg) scale(1)}}
+.actions.sq-row{flex-direction:row}
+.sq-row .btn.ghost{flex:0 0 auto;width:auto;padding:11px 16px}
+
+/* ---------- surveillance file ---------- */
+.spy-intro{margin-top:12px!important}
+.ev{margin-top:22px;padding-top:18px;border-top:2px dashed #1c191244}
+.ev-no{font:700 13px/1 var(--f-display);letter-spacing:.18em;color:var(--red);text-transform:uppercase;margin-bottom:10px}
+.ev-media{position:relative;width:88%;margin:0 auto;background:#000;border:6px solid #fff;border-bottom-width:22px;box-shadow:3px 5px 12px #0006;transform:rotate(-1.5deg)}
+.ev:nth-child(even) .ev-media{transform:rotate(1.4deg)}
+.ev-media img,.ev-media video{display:block;width:100%;max-height:62dvh;object-fit:cover}
+.ev-media video{object-fit:contain;background:#000}
+.ev-cap{margin-top:12px!important;font:15px/1.45 var(--f-type)}
+.ev-note{margin-top:6px;font:600 23px/1.1 var(--f-hand);color:#1d3b8f;transform:rotate(-1.5deg)}
 
 /* ---------- ritual ---------- */
 #ritual{justify-content:space-between}
@@ -395,6 +444,26 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
     <div class="actions" id="dActions"><button class="btn" id="dNext">Далее</button></div>
   </section>
 
+  <!-- 8a. Squad roll call, cards come from CONFIG.squad -->
+  <section class="scene" id="squad">
+    <header class="bar"><span id="sqCount">Личный состав</span><span class="secret">Сов. секретно</span></header>
+    <figure class="panel" id="sqPanel" style="margin:4px 6px 0"><img id="sqImg" alt=""><span class="tag" id="sqTag"></span><span class="sq-stamp" id="sqStamp"></span></figure>
+    <div class="caption"><div class="cap-label" id="sqName"></div><p class="cap-text" id="sqText"></p></div>
+    <div class="actions wait sq-row" id="sqActions"><button class="btn ghost" id="sqPrev" aria-label="Предыдущий боец">‹</button><button class="btn" id="sqNext">Следующий боец</button></div>
+  </section>
+
+  <!-- 8b. Surveillance file on the candidate, evidence comes from CONFIG.spy -->
+  <section class="scene" id="spy">
+    <header class="bar"><span>Досье · лист 3</span><span class="secret">Наблюдение</span></header>
+    <article class="sheet" id="spySheet">
+      <h2><small>Собрано лично</small>Объект наблюдения: <span data-k="name"></span></h2>
+      <p class="spy-intro">Наблюдение велось с момента рекомендации. Агенты работали под прикрытием. Объект ничего не заметил. Почти.</p>
+      <div id="spyList"></div>
+      <div class="verdict" id="spyVerdict">Объект<br>подходит</div>
+    </article>
+    <div class="actions" id="spyActions"><button class="btn" id="spyNext">Первая улика</button></div>
+  </section>
+
   <!-- 9. Candidate file -->
   <section class="scene" id="file">
     <header class="bar"><span>Досье · лист 2</span><span class="secret">Личное дело</span></header>
@@ -536,10 +605,45 @@ const CONFIG = {
   name: "Шура",                     // обращение в тексте
   fullName: "Шура",                 // для удостоверения: впишите имя и фамилию
   callsign: "Фотокор",              // позывной
+  age: 20,                          // возраст: главное условие вербовки
   hint: "Шлем ближе, чем кажется. Осмотрись: отряд рядом.",   // подсказка, где спрятан шлем
-  night: "В ночь перед твоим днём рождения",                  // когда исчез рядовой Н.
+  hintPhoto: "",                    // фото-наводка на шлем, например "media/hint.jpg". Пусто = заглушка «снимок засекречен»
+  night: "В ночь перед твоим днём рождения",                  // когда агенты подбросили шлем
   extraAchievements: [              // свои пункты в «Основания для зачисления»
     "Ни разу не замечен с пустой стопкой."
+  ],
+  // Знакомство с отрядом. callsign = позывной, name = настоящее имя (можно оставить пустым), stamp = штамп на фото
+  squad: [
+    { img: "S7_hq", pos: "60% 30%", callsign: "Генштаб", name: "", role: "Командование",
+      text: "Командир отряда. 30 до 30 по версии Forbes. Руководит операциями из Центрального университета.\nНи разу не был на поле боя. Зато видел все дашборды." },
+    { img: "S1_polar", pos: "50% 30%", callsign: "Полярник", name: "", role: "Холодные операции",
+      text: "Специалист по операциям в минус сорок. Говорит, что ему не холодно.\nЕму холодно." },
+    { img: "S4_mustache", pos: "50% 35%", callsign: "Усач", name: "", role: "Ветеран",
+      text: "Ветеран всех войн сразу. Прошёл их за один вечер.\nУсы отрастил прямо перед фотографией." },
+    { img: "S10_civil", pos: "50% 30%", callsign: "Гражданский", name: "", role: "Работа под прикрытием",
+      text: "Форму не носит принципиально, чтобы никто не догадался.\nПока никто не догадался." },
+    { img: "S3_desert", pos: "50% 25%", callsign: "Пустынник", name: "", role: "Разведка",
+      text: "Видит цель за километр.\nВ очках. Без очков видит только километр." },
+    { img: "S6_medic", pos: "50% 25%", callsign: "Медик", name: "", role: "Полевая медицина",
+      text: "Лечит всё, кроме утра после текила-бума.\nНад этим отряд работает уже который год." },
+    { img: "S8_space", pos: "45% 40%", callsign: "Космодесант", name: "", role: "Орбитальные операции",
+      text: "Отвечает за операции на орбите.\nЗачем на орбите пулемёт, лучше не спрашивать." },
+    { img: "S9_toilet", pos: "50% 30%", callsign: "Сантехник", name: "", role: "Зачистка санузлов",
+      text: "Спецназ по туалетам. Зачистил санузел.\nСанузел не выжил." },
+    { img: "S2_selfie", pos: "50% 40%", callsign: "Связист", name: "", role: "Связь и сторис",
+      text: "Единственный боец, которому можно снимать.\nТебе нельзя. Помнишь?" },
+    { img: "S5_funeral", pos: "50% 55%", callsign: "Чечел", name: "", role: "Бывший боец", stamp: "Разгласил",
+      text: "Рассказал про отряд одному человеку. По секрету.\nМы его помним." }
+  ],
+  // Досье слежки. img = фото, v = видео (со звуком, можно включить)
+  spy: [
+    { img: "D5_selfie", text: "Фото для опознания. Объект в естественной среде.", note: "Особая примета: кудри. Маскировке не поддаются." },
+    { img: "D3_hood", text: "Попытка маскировки. Капюшон, очки, серьёзное лицо.", note: "Не помогло. Опознан по бороде." },
+    { img: "D2_bear", text: "Контакт с неустановленным синим медведем.", note: "Медведь наш. Завербован раньше." },
+    { img: "D4_call", text: "Перехват видеосвязи.", note: "Говорил громко. Записали всё." },
+    { v: "D7_ice", text: "Проверка на устойчивость. Каток, вечер, свидетели.", note: "Устойчивость: условная. Но вставал же!" },
+    { v: "D6_vr", text: "Тренировка в виртуальной реальности. Противник невидим.", note: "Враг виртуальный. Потери среди подушек настоящие." },
+    { img: "D1_tank", text: "Учения. Объект самовольно занял танк.", note: "Танк вернул. Почти целым. Годен!" }
   ]
 };
 /* ============================================================ */
@@ -737,41 +841,73 @@ function go(id, arg) {
 /* ============================================================
    АКТ 1. Рассекреченные материалы
    ============================================================ */
+// Документ: картинка (i), видео (v) или текстовый экран (tele / items / stamp). btn = надпись на кнопке «дальше».
 const DOCS = [
-  { label: "Происхождение", tag: "Вещдок 01", v: "V1_intro", pos: "50% 74%",
-    text: ["Шлем. Найден при выходе из окружения.\nНа нём надпись, которую все читают по-разному."] },
   { label: "Отряд 320", tag: "Архив ОТБО-320", i: "I1_squad", pos: "50% 62%",
-    text: ["Создан в тайне. Состав засекречен.\nНикто из бойцов не знал задачу целиком. Знали одно: приказ выполняется до конца."] },
-  { label: "Спецзадача", tag: "Фото 1/1", i: "I2_soldier", pos: "50% 42%",
-    text: ["Особая задача отряда не раскрывается.\nИзвестно одно: после каждой операции на столе не оставалось ничего."] },
-  { label: "Цепочка", tag: "Вещдок 02", v: "V2_hands", pos: "50% 55%",
-    text: [`Шлем передавали из рук в руки. Каждый ждал своего часа.\nПоследним его носил рядовой Н. ${CONFIG.night} он исчез. Шлем остался.`] },
-  { label: "Последнее донесение", tag: "Вещдок 03", i: "I3_table", pos: "50% 70%", final: true,
-    text: ["Шлем спрятан. Кто его найдёт, получит доступ к досье. Номер на шлеме открывает отряд.\nПодсказка: ", { t: CONFIG.hint, cls: "hl" }] }
+    text: ["Есть подразделение, о котором не пишут в новостях. Его нет в списках, у него нет адреса.\nОтряд 320. Официально его не существует."] },
+  { label: "Рекомендация", tag: "Агент наблюдения", i: "I2_soldier", pos: "50% 42%",
+    text: [`Однажды в штаб поступила рекомендация на некоего «${CONFIG.name}». От кого, не скажем. Скажем одно: тебя очень хвалили.\nС того дня за тобой следят.`] },
+  { label: "Отбор", tag: "Анкета кандидата", btn: "А что с последним?",
+    items: [["Возраст", `${CONFIG.age} лет`, "✓", "big"], ["Кудри", "в наличии", "✓"], ["Устойчивость", "проверена на катке", "✓"], ["Чувство юмора", "обнаружено", "✓"], ["Умение молчать", "не проверено", "?", "q"]],
+    text: [`Главное условие отряда: бойцу должно быть ровно ${CONFIG.age}. Тебе исполнилось ${CONFIG.age} сегодня.\nСовпадение? Нет. Мы ждали этого дня.`] },
+  { label: "Вербовка", tag: "Закрытый канал", btn: "Слушаю",
+    tele: `ВЫХОД НА КОНТАКТ ...... OK\nКАНДИДАТ ......... ${CONFIG.name.toUpperCase()}\nВОЗРАСТ .............. ${CONFIG.age}\nСТАТУС ........ ВЕРБОВКА`,
+    text: ["Мы вышли на тебя сами. Эта передача и есть вербовка.\nОтказаться можно. Кнопки для этого, правда, нет."] },
+  { label: "Предупреждение 1 из 4", stamp: "Сов. секретно", btn: "Понял",
+    text: ["Всё, что ты увидишь дальше, составляет тайну отряда 320.\nЕсли рядом кто-то есть, прикрой экран ладонью."] },
+  { label: "Предупреждение 2 из 4", stamp: "Никому", btn: "Понял. Никому",
+    alt: { label: "А маме можно?", reply: "Нет.\nМаме тоже нельзя. Мама узнает, когда придёт время." },
+    text: ["Ни друзьям. Ни в сторис. Ни в «близкие друзья».\nДаже если очень хочется."] },
+  { label: "Предупреждение 3 из 4", stamp: "Особенно", btn: "Я никому не доверяю",
+    text: ["Особенно тем, кто сейчас стоит рядом и подозрительно улыбается.\nОни могут быть не теми, за кого себя выдают."] },
+  { label: "Предупреждение 4 из 4", stamp: "Последнее", btn: "Обязуюсь молчать", sign: true,
+    text: ["Разглашение карается внеочередным текила-бумом. Без закуски.\nПоследним проболтался боец Чечел. Больше его никто не видел."] },
+  { label: "Отличительный знак", tag: "Вещдок 01", v: "V1_intro", pos: "50% 74%",
+    text: ["У бойца отряда нет погон и нет нашивок. Его знак один: шлем.\nНа каждом шлеме личный номер. Номер и есть боец."] },
+  { label: "Доставка", tag: "Вещдок 02", v: "V2_hands", pos: "50% 55%",
+    text: [`Твой шлем уже готов. ${CONFIG.night} агенты отряда доставили его к тебе.\nОн где-то рядом. Ближе, чем кажется.`] },
+  { label: "Задание №1", tag: "Фото-наводка", hint: true, final: true,
+    text: ["Найди свой шлем. Номер на нём откроет доступ к отряду.\nНаводка: ", { t: CONFIG.hint, cls: "hl" }] }
 ];
+const LAST_DOC = "doc-" + DOCS.length;
 
 const docsHost = $("#docs");
+function docMedia(d, i) {
+  if (d.v) return `<figure class="panel"><video muted playsinline loop preload="${i === 0 ? "auto" : "metadata"}" poster="media/${d.v}_poster.jpg" src="media/${d.v}.mp4" style="object-position:${d.pos}"></video><button class="tapplay">Нажми, чтобы воспроизвести</button><span class="tag">${d.tag}</span></figure>`;
+  if (d.i) return `<figure class="panel"><img src="media/${d.i}.jpg" alt="" style="object-position:${d.pos}"><span class="tag">${d.tag}</span></figure>`;
+  if (d.hint) return `<figure class="panel">${CONFIG.hintPhoto ? `<img src="${CONFIG.hintPhoto}" alt="Фото-наводка">` : `<div class="ph-empty"><b>Засекречено</b><span>Снимок будет передан агентом лично</span></div>`}<span class="tag">${d.tag}</span></figure>`;
+  if (d.stamp) return `<div class="tele warn"><div class="wstamp">${d.stamp}</div>${d.sign ? `<div class="wstamp sign">Подписано</div>` : ""}</div>`;
+  const items = d.items ? `<div class="crit">${d.items.map(r => `<div class="c ${r[3] || ""}"><span class="k">${r[0]}</span><span class="v">${r[1]}</span><span class="m ${r[3] === "q" ? "q" : ""}">${r[2]}</span></div>`).join("")}</div>` : "";
+  return `<div class="tele"><span class="tag">${d.tag}</span>${d.tele ? `<div class="tele-lines"></div>` : ""}${items}</div>`;
+}
 DOCS.forEach((d, i) => {
   const id = "doc-" + (i + 1);
-  const media = d.v
-    ? `<video muted playsinline loop preload="${i === 0 ? "auto" : "metadata"}" poster="media/${d.v}_poster.jpg" src="media/${d.v}.mp4" style="object-position:${d.pos}"></video><button class="tapplay">Нажми, чтобы воспроизвести</button>`
-    : `<img src="media/${d.i}.jpg" alt="" style="object-position:${d.pos}">`;
   const actions = d.final
     ? `<button class="btn" data-go="code">Шлем у меня. Ввести номер</button><p class="note">Сначала найди шлем. Номер написан на нём.</p>`
-    : `<button class="btn" data-go="doc-${i + 2}">Далее</button>`;
+    : `<button class="btn" ${d.sign ? "data-sign" : `data-go="doc-${i + 2}"`}>${d.btn || "Далее"}</button>${d.alt ? `<button class="btn ghost" data-alt>${d.alt.label}</button>` : ""}`;
   docsHost.insertAdjacentHTML("beforeend", `
     <section class="scene doc" id="${id}">
       <header class="bar">${i ? `<button class="back" data-go="doc-${i}">‹ Назад</button>` : ""}<span>Документ ${i + 1} / ${DOCS.length}</span><span class="secret">Сов. секретно</span></header>
-      <figure class="panel" style="margin:4px 6px 0">${media}<span class="tag">${d.tag}</span></figure>
+      ${docMedia(d, i)}
       <div class="caption"><div class="cap-label">${d.label}</div><p class="cap-text"></p></div>
       <div class="actions wait">${actions}</div>
     </section>`);
   const sc = document.getElementById(id);
-  const cap = sc.querySelector(".cap-text"), acts = sc.querySelector(".actions");
+  const cap = sc.querySelector(".cap-text"), acts = sc.querySelector(".actions"), box = sc.querySelector(".panel,.tele");
   sc.querySelector(".caption").addEventListener("click", () => skip(cap));
-  sc.querySelector(".panel").addEventListener("click", () => skip(cap));
+  box.addEventListener("click", () => skip(cap));
+  const alt = sc.querySelector("[data-alt]");
+  if (alt) alt.addEventListener("click", () => { alt.hidden = true; FX.err(); vibrate([60, 40, 60]); type(cap, d.alt.reply); });
+  const sign = sc.querySelector("[data-sign]");
+  if (sign) sign.addEventListener("click", async () => {
+    if (sign.disabled) return; sign.disabled = true;
+    sc.querySelector(".wstamp.sign").classList.add("hit"); FX.stamp(); vibrate(70);
+    await sleep(1100); go("doc-" + (i + 2));
+  });
+  let run = 0;
   hooks[id] = {
-    enter() {
+    async enter() {
+      const me = ++run, alive = () => me === run && current === sc;
       FX.ambient(true);
       if (S.stage === "new") { S.stage = "act1"; save(); }
       if (d.final && (S.stage === "new" || S.stage === "act1")) { S.stage = "search"; if (!S.searchStart) S.searchStart = Date.now(); save(); }
@@ -781,10 +917,20 @@ DOCS.forEach((d, i) => {
       const next = DOCS[i + 1];
       if (next && next.v) { const nv = document.getElementById("doc-" + (i + 2)).querySelector("video"); nv && (nv.preload = "auto"); }
       if (d.final) { const av = $("#vAccess"); if (av.preload !== "auto") { av.preload = "auto"; av.load(); } }
-      acts.classList.add("wait");
+      acts.classList.add("wait"); cap.innerHTML = "";
+      if (alt) alt.hidden = false;
+      if (sign) sign.disabled = false;
+      sc.querySelectorAll(".wstamp,.crit .c").forEach(el => el.classList.remove("hit", "in"));
+      if (d.tele) { await sleep(300); if (!alive()) return; await type(sc.querySelector(".tele-lines"), d.tele, { speed: 18 }); }
+      for (const row of sc.querySelectorAll(".crit .c")) {
+        await sleep(reduced ? 0 : 520); if (!alive()) return;
+        row.classList.add("in"); row.classList.contains("q") ? FX.err() : FX.stamp();
+      }
+      if (d.stamp) { await sleep(350); if (!alive()) return; sc.querySelector(".wstamp").classList.add("hit"); FX.stamp(); vibrate(70); await sleep(450); }
+      if (!alive()) return;
       type(cap, d.text).then(() => acts.classList.remove("wait"));
     },
-    leave() { skip(cap); }
+    leave() { run++; skip(cap); }
   };
 });
 app.addEventListener("click", e => {
@@ -795,7 +941,7 @@ app.addEventListener("click", e => {
 });
 
 /* ---------- boot ---------- */
-const RESUME = { act1: "doc-1", search: "doc-5", unlocked: "dossier", done: "id" };
+const RESUME = { act1: "doc-1", search: LAST_DOC, unlocked: "dossier", done: "id" };
 let resetArmed = false, audioReady = false, bootRun = null;
 // Браузер даёт играть звук только после касания, поэтому сеанс связи стартует с тапа по «Сигнал обнаружен».
 function gateWait() {
@@ -940,7 +1086,7 @@ hooks.code = {
     drawCells();
   }
 };
-$("#codeBack").addEventListener("click", () => go("doc-5"));
+$("#codeBack").addEventListener("click", () => go(LAST_DOC));
 
 /* ============================================================
    Доступ разрешён (V3, штамп ложится вместе с рукой в кадре)
@@ -1010,9 +1156,9 @@ async function dossierStep() {
     dNext.textContent = "Далее";
   } else if (dStep === 3) {
     reveal(4);
-    dNext.textContent = "Личное дело кандидата";
+    dNext.textContent = "Познакомиться с отрядом";
   } else {
-    go("file"); return;
+    go("squad"); return;
   }
   dStep++;
   dNext.disabled = false;
@@ -1031,6 +1177,83 @@ hooks.dossier = {
   }
 };
 dNext.addEventListener("click", dossierStep);
+
+/* ============================================================
+   Знакомство с отрядом
+   ============================================================ */
+let sq = 0;
+const SQ = CONFIG.squad, two = n => String(n).padStart(2, "0");
+function showFighter(n) {
+  sq = n;
+  const b = SQ[n], img = $("#sqImg"), st = $("#sqStamp"), acts = $("#sqActions");
+  img.src = `media/${b.img}.jpg`; img.style.objectPosition = b.pos || "50% 30%";
+  if (!reduced) { img.classList.remove("kb"); void img.offsetWidth; img.classList.add("kb"); }
+  if (SQ[n + 1]) new Image().src = `media/${SQ[n + 1].img}.jpg`;
+  $("#sqCount").textContent = `Боец ${n + 1} / ${SQ.length}`;
+  $("#sqTag").textContent = `Личный номер 320-${two(n + 1)}`;
+  $("#sqName").textContent = b.name ? `${b.callsign} · ${b.name}` : `${b.callsign} · ${b.role}`;
+  st.textContent = b.stamp || ""; st.classList.remove("hit"); st.hidden = !b.stamp;
+  $("#sqPrev").hidden = n === 0;
+  $("#sqNext").textContent = n === SQ.length - 1 ? "Это все. Дальше" : "Следующий боец";
+  acts.classList.add("wait");
+  FX.radio(.12);
+  type($("#sqText"), b.text).then(() => {
+    if (sq !== n) return;
+    if (b.stamp) { st.classList.add("hit"); FX.stamp(); vibrate(70); }
+    acts.classList.remove("wait");
+  });
+}
+hooks.squad = { enter() { FX.ambient(true); showFighter(0); }, leave() { skip($("#sqText")); } };
+$("#sqNext").addEventListener("click", () => sq < SQ.length - 1 ? showFighter(sq + 1) : go("spy"));
+$("#sqPrev").addEventListener("click", () => sq > 0 && showFighter(sq - 1));
+["#sqPanel", ".caption"].forEach(q => $("#squad").querySelector(q).addEventListener("click", () => skip($("#sqText"))));
+
+/* ============================================================
+   Досье наблюдения
+   ============================================================ */
+let ev = 0;
+const spySheet = $("#spySheet"), spyNext = $("#spyNext");
+$("#spy [data-k=name]").textContent = CONFIG.name;
+$("#spyList").innerHTML = CONFIG.spy.map((e, i) => `
+  <div class="ev rv">
+    <div class="ev-no">Улика ${two(i + 1)} · ${e.v ? "видеозапись" : "фото"}</div>
+    <div class="ev-media">${e.v
+      ? `<video controls playsinline preload="none" poster="media/${e.v}_poster.jpg" src="media/${e.v}.mp4"></video>`
+      : `<img src="media/${e.img}.jpg" alt="" loading="lazy">`}</div>
+    <p class="ev-cap"></p>
+    <div class="ev-note"></div>
+  </div>`).join("");
+const evs = [...$("#spyList").children];
+async function spyStep() {
+  if (ev >= evs.length) { go("file"); return; }
+  spyNext.disabled = true;
+  const el = evs[ev], e = CONFIG.spy[ev];
+  el.classList.add("in"); FX.stamp(); vibrate(40);
+  setTimeout(() => spySheet.scrollTo({ top: el.offsetTop - 8, behavior: reduced ? "auto" : "smooth" }), 60);
+  await sleep(500);
+  await type(el.querySelector(".ev-cap"), e.text, { speed: 20 });
+  await sleep(250);
+  await type(el.querySelector(".ev-note"), e.note, { speed: 30, sound: false });
+  ev++;
+  if (ev === evs.length) {
+    await sleep(400);
+    $("#spyVerdict").classList.add("hit"); FX.stamp(); vibrate(70);
+    spySheet.scrollTo({ top: spySheet.scrollHeight, behavior: reduced ? "auto" : "smooth" });
+    spyNext.textContent = "Личное дело";
+  } else spyNext.textContent = "Следующая улика";
+  spyNext.disabled = false;
+}
+hooks.spy = {
+  enter() {
+    FX.ambient(false);
+    ev = 0; spySheet.scrollTop = 0;
+    evs.forEach(el => { el.classList.remove("in"); el.querySelector(".ev-cap").textContent = ""; el.querySelector(".ev-note").textContent = ""; });
+    $("#spyVerdict").classList.remove("hit");
+    spyNext.textContent = "Первая улика"; spyNext.disabled = false;
+  }
+};
+spyNext.addEventListener("click", spyStep);
+spySheet.addEventListener("click", () => spySheet.querySelectorAll(".typing").forEach(skip));
 
 /* ============================================================
    Личное дело кандидата
@@ -1055,7 +1278,7 @@ hooks.file = {
       try { v.currentTime = 0; } catch (e) {}
       const p = v.play(); if (p && p.then) p.then(() => ph.classList.add("alive")).catch(() => {});
     }, 1800);
-    const F = [["Кандидат", CONFIG.fullName], ["Позывной", CONFIG.callsign], ["Личный номер", fmt(S.code)], ["Допуск", "Подтверждён"]];
+    const F = [["Кандидат", CONFIG.fullName], ["Позывной", CONFIG.callsign], ["Возраст", `${CONFIG.age} лет`], ["Личный номер", fmt(S.code)], ["Допуск", "Подтверждён"]];
     const host = $("#fields");
     host.innerHTML = F.map(f => `<div class="f"><label>${f[0]}</label><div></div></div>`).join("");
     const vals = host.querySelectorAll(".f div");
