@@ -24,7 +24,7 @@
   --olive:#5d6237;
   --olive-deep:#2b2e1b;
   --red:#b3281d;        /* stamps, alarms */
-  --amber:#f2b146;      /* radio display, accents */
+  --amber:#f2b146;      /* radio display, tequila */
   --lime:#a9c24c;       /* accepted */
   --f-display:"Oswald","Arial Narrow",Impact,sans-serif;
   --f-type:"PT Mono","Courier New",ui-monospace,monospace;
@@ -354,11 +354,6 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
 #cut.hit{animation:cut .28s ease-out}
 @keyframes cut{0%{opacity:1}100%{opacity:0}}
 
-/* ---------- squad patch, hidden until the reveal ---------- */
-.patch.redacted{position:relative}
-.patch.redacted img{filter:blur(9px) grayscale(1) brightness(.6)}
-.patch.redacted::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:700 52px/1 var(--f-display);color:var(--paper)}
-
 /* ---------- reveal: the squad's training film ---------- */
 #reveal{padding:0;background:#000}
 #vBrief{filter:blur(16px) brightness(.4);transition:filter .9s}
@@ -371,7 +366,6 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
   padding:calc(env(safe-area-inset-top,0px) + 24px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);background:#000d;text-align:center}
 .rv-card .patch{width:140px;height:140px;flex:0 0 auto}
 .rv-card h2{margin:0;font:700 clamp(34px,11vw,46px)/1 var(--f-display);text-transform:uppercase;color:var(--amber);text-wrap:balance}
-.rv-card .motto,.rv-card .motto-ru{color:var(--paper)}
 .rv-card .btn{margin-top:10px}
 
 @media (max-height:640px){
@@ -446,8 +440,8 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
     <header class="bar"><span>Досье · лист 1</span><span class="secret">Сов. секретно</span></header>
     <article class="sheet" id="dSheet">
       <div class="sheet-head rv" data-r="0">
-        <div class="patch redacted"><img src="media/I4_patch.jpg" alt="Шеврон отряда засекречен"></div>
-        <h2><small>Рассекречено частично</small>Отряд 320. Особого назначения</h2>
+        <div class="patch"><img src="media/I4_patch.jpg" alt="Шеврон отряда 320"></div>
+        <h2><small>Рассекречено</small>Отряд 320. Текила Бум</h2>
       </div>
       <div class="blk rv" data-r="1">
         <h3>Что значит номер на шлеме</h3>
@@ -457,12 +451,12 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
         <h3>Девиз отряда</h3>
         <div class="motto">BORN TO KILL</div>
         <div class="motto-ru" id="mottoRu"></div>
-        <div class="shots" id="shots">Засекречено</div>
+        <div class="shots" id="shots">Шоты.</div>
       </div>
       <div class="blk rv" data-r="4">
         <h3>Боевая задача</h3>
-        <p class="lead">Засекречено до присяги.</p>
-        <p style="margin-top:8px">Чем занимается отряд, бойцы узнают только перед присягой. Известно одно: ни одна операция не проводится в одиночку. Отряд пополняется раз в год, и только по личному приказу командования.</p>
+        <p class="lead">Один выстрел. Одна стопка.</p>
+        <p style="margin-top:8px">Ни одна рюмка не остаётся на столе. Ни один боец не пьёт в одиночку. Отряд пополняется раз в год, и только по личному приказу командования.</p>
       </div>
     </article>
     <div class="actions" id="dActions"><button class="btn" id="dNext">Далее</button></div>
@@ -505,28 +499,24 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--amber);outline-
       </div>
       <div class="verdict" id="verdict">Представлен<br>к зачислению</div>
     </article>
-    <div class="actions wait" id="fActions"><button class="btn" id="fGo">Последний допуск</button></div>
+    <div class="actions wait" id="fActions"><button class="btn" id="fGo">К посвящению</button></div>
   </section>
 
-  <!-- 9a. Reveal: the squad's training film, first place the squad's real business shows up -->
+  <!-- 9a. The squad's training film, watched right before the initiation -->
   <section class="scene" id="reveal">
     <video class="full" id="vBrief" playsinline preload="none" poster="media/R1_briefing_poster.jpg" src="media/R1_briefing.mp4"></video>
     <div class="vignette"></div>
     <div class="rv-intro" id="rvIntro">
-      <div class="r-no">Допуск: кандидат в бойцы</div>
+      <div class="r-no">Перед присягой</div>
       <h2>Учебный фильм отряда</h2>
-      <p>Ты прошёл отбор. Пора узнать, чем на самом деле занимается отряд 320.<br>Звук на полную.</p>
+      <p>Каждый боец перед присягой смотрит учебный фильм.<br>Звук на полную.</p>
       <button class="btn red" id="rvPlay">Смотреть</button>
     </div>
     <button class="btn ghost" id="rvSkip" hidden>Пропустить</button>
     <div class="rv-card" id="rvCard" hidden>
       <div class="patch"><img src="media/I4_patch.jpg" alt="Шеврон отряда 320"></div>
-      <div class="r-no">Рассекречено полностью</div>
-      <h2>Текила-бум отряд 320</h2>
-      <div class="motto">BORN TO KILL</div>
-      <div class="motto-ru" id="rvMotto"></div>
-      <div class="shots" id="rvShots">Шоты.</div>
-      <button class="btn" id="rvGo" hidden>К посвящению</button>
+      <h2>Инструктаж пройден</h2>
+      <button class="btn" id="rvGo">К присяге</button>
     </div>
   </section>
 
@@ -680,12 +670,12 @@ const CONFIG = {
   hintPhoto: "",                    // фото-наводка на шлем, например "media/hint.jpg". Пусто = заглушка «снимок засекречен»
   night: "В ночь перед твоим днём рождения",                  // когда агенты подбросили шлем
   extraAchievements: [              // свои пункты в «Основания для зачисления»
-    "Умеет хранить тайну. Пока что."
+    "Ни разу не замечен с пустой стопкой."
   ],
   // Знакомство с отрядом. callsign = позывной, name = настоящее имя (можно оставить пустым), stamp = штамп на фото
   squad: [
     { img: "S0_ruler", pos: "62% 20%", callsign: "Верховный правитель", name: "", role: "Высшее командование",
-      text: "Над ним только небо. В небе его дроны.\nЛично испытывает каждый дрон отряда. Без его подписи не начинается ни одна операция." },
+      text: "Над ним только небо. В небе его дроны.\nЛично испытывает каждый дрон отряда. Без его подписи не начинается ни один текила-бум." },
     { img: "S7_hq", pos: "60% 30%", callsign: "Генштаб", name: "", role: "Начальник штаба",
       text: "Начальник штаба. 30 до 30 по версии Forbes. Руководит операциями из Центрального университета.\nНи разу не был на поле боя. Зато видел все дашборды." },
     { img: "S1_polar", pos: "50% 30%", callsign: "Полярник", name: "", role: "Холодные операции",
@@ -697,7 +687,7 @@ const CONFIG = {
     { img: "S3_desert", pos: "50% 25%", callsign: "Пустынник", name: "", role: "Разведка",
       text: "Видит цель за километр.\nВ очках. Без очков видит только километр." },
     { img: "S6_medic", pos: "50% 25%", callsign: "Медик", name: "", role: "Полевая медицина",
-      text: "Лечит всё, кроме мужской простуды.\nНад этим отряд работает уже который год." },
+      text: "Лечит всё, кроме утра после текила-бума.\nНад этим отряд работает уже который год." },
     { img: "S8_space", pos: "45% 40%", callsign: "Космодесант", name: "", role: "Орбитальные операции",
       text: "Отвечает за операции на орбите.\nЗачем на орбите пулемёт, лучше не спрашивать." },
     { img: "S9_toilet", pos: "50% 30%", callsign: "Сантехник", name: "", role: "Зачистка санузлов",
@@ -921,7 +911,7 @@ const AGE = (n => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "год" : n % 10 >= 
 const DOCS = [
   { label: "Отряд 320", tag: "Архив ОТБО-320", i: "I1_squad", pos: "50% 62%",
     text: ["Есть подразделение, о котором не пишут в новостях. Его нет в списках, у него нет адреса.\nОтряд 320. Официально его не существует."] },
-  { label: "Рекомендация", tag: "Агент наблюдения", i: "I2_soldier_top", pos: "50% 35%",
+  { label: "Рекомендация", tag: "Агент наблюдения", i: "I2_soldier", pos: "50% 42%",
     text: [`Однажды в штаб поступила рекомендация на некоего «${CONFIG.name}». От кого, не скажем. Скажем одно: тебя очень хвалили.\nС того дня за тобой следят.`] },
   { label: "Отбор", tag: "Анкета кандидата", btn: "А что с последним?",
     items: [["Возраст", AGE, "✓", "big"], ["Кудри", "в наличии", "✓"], ["Устойчивость", "проверена на катке", "✓"], ["Чувство юмора", "обнаружено", "✓"], ["Умение молчать", "не проверено", "?", "q"]],
@@ -937,7 +927,7 @@ const DOCS = [
   { label: "Предупреждение 3 из 4", stamp: "Особенно", btn: "Я никому не доверяю",
     text: ["Особенно тем, кто сейчас стоит рядом и подозрительно улыбается.\nОни могут быть не теми, за кого себя выдают."] },
   { label: "Предупреждение 4 из 4", stamp: "Последнее", btn: "Обязуюсь молчать", sign: true,
-    text: ["Разглашение карается по законам отряда. Каким именно, узнают только те, кто проболтался.\nПоследним проболтался боец Чечел. Больше его никто не видел."] },
+    text: ["Разглашение карается внеочередным текила-бумом. Без закуски.\nПоследним проболтался боец Чечел. Больше его никто не видел."] },
   { label: "Отличительный знак", tag: "Вещдок 01", v: "V1_intro", pos: "50% 74%",
     text: ["У бойца отряда нет погон и нет нашивок. Его знак один: шлем.\nНа каждом шлеме личный номер. Номер и есть боец."] },
   { label: "Доставка", tag: "Вещдок 02", v: "V2_hands", pos: "50% 55%",
@@ -1126,7 +1116,7 @@ document.addEventListener("keydown", e => {
 });
 const ERR = [
   () => `Неверный код. Ты точно ${CONFIG.name}?`,
-  () => "Отряд ждёт. Номер на шлеме, а не в телефоне.",
+  () => "Отряд ждёт. Номер на шлеме, не на бутылке.",
   () => "Подсказка: боковая сторона шлема, чёрный маркер, две строки.",
   n => `Попытка №${n}. Командование начинает волноваться. Цифры в две строки: сначала верхняя.`
 ];
@@ -1217,7 +1207,7 @@ async function dossierStep() {
   if (dStep === 0) {
     reveal(1);
     const d = S.code || "";
-    const rows = [[d.slice(0, 3), "Отряд особого назначения. Какого именно, узнаешь в конце."], [d.slice(3, 6), "Взвод. Те, кто сейчас рядом с тобой."], [d.slice(6), "Личный номер бойца. Твой."]];
+    const rows = [[d.slice(0, 3), "Отряд. Текила-бум, особого назначения."], [d.slice(3, 6), "Взвод. Тот, что за твоим столом."], [d.slice(6), "Личный номер бойца. Твой."]];
     const dec = $("#decode"); dec.innerHTML = rows.map(r => `<div class="row"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
     for (const r of dec.querySelectorAll(".row")) { await sleep(550); r.classList.add("in"); FX.stamp(); }
     dNext.textContent = "Далее";
@@ -1372,26 +1362,19 @@ $("#fSheet").addEventListener("click", () => $("#fSheet").querySelectorAll(".typ
 $("#fGo").addEventListener("click", () => go("reveal"));
 
 /* ============================================================
-   Раскрытие: учебный фильм отряда. Звук включается тапом «Смотреть».
+   Учебный фильм отряда перед посвящением. Звук включается тапом «Смотреть».
    ============================================================ */
 const vBrief = $("#vBrief");
 let rvRun = 0;
-async function revealCard() {
-  const me = rvRun, card = $("#rvCard");
+function revealCard() {
+  const card = $("#rvCard");
   if (!card.hidden) return;
   vBrief.pause();
   $("#rvSkip").hidden = true; $("#rvIntro").hidden = true; $("#reveal").classList.remove("playing");
-  card.hidden = false; $("#rvGo").hidden = true;
-  $("#rvMotto").textContent = ""; $("#rvShots").classList.remove("hit");
+  card.hidden = false;
   card.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: "both" });
   FX.stamp(); vibrate(60);
   if (S.stage === "unlocked") { S.stage = "revealed"; save(); }
-  await sleep(900); if (me !== rvRun) return;
-  await scramble($("#rvMotto"), "Рождены убивать.");
-  await sleep(450); if (me !== rvRun) return;
-  $("#rvShots").classList.add("hit"); FX.stamp(); vibrate(60);
-  await sleep(700); if (me !== rvRun) return;
-  $("#rvGo").hidden = false;
 }
 hooks.reveal = {
   enter() {
